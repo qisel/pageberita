@@ -103,19 +103,16 @@
         
         .container-majalah { background-color: #ffffff; transition: opacity 0.5s ease-in; }
         
-        /* --- PERUBAHAN CSS HEADER --- */
         header { 
             max-width: 800px;
             margin: 0 auto;
             box-sizing: border-box;
             display: flex; 
-            align-items: center; /* Mengatur item sejajar vertikal */
+            align-items: center;
             padding: 15px 25px; 
             border-bottom: 4px solid var(--warna-aksen); 
         }
-        header .logo {
-            flex-shrink: 0; /* Mencegah logo mengecil */
-        }
+        header .logo { flex-shrink: 0; }
         header .logo img { height: 60px; width: auto; }
         header .logo a { display: inline-block; transition: transform 0.2s ease-in-out; }
         header .logo a:hover { transform: scale(1.05); }
@@ -125,7 +122,7 @@
             text-align: center; 
             margin: 0; 
             padding: 0 15px;
-            flex-grow: 1; /* Membuat judul mengisi ruang kosong di tengah */
+            flex-grow: 1;
         }
 
         main, .footer-content {
@@ -153,11 +150,34 @@
 
         .read-more-mobile { display: none; }
         
+        /* --- PERUBAHAN RESPONSIVE --- */
         @media (max-width: 650px) { 
             body { padding: 0; padding-bottom: 85px; }
             .admin-controls { margin: 0; border-radius: 0; border-left: none; border-right: none; padding: 20px 10px; } 
-            header, main { padding-left: 15px; padding-right: 15px; }
-            header { flex-direction: column; gap: 15px; }
+            main { padding: 15px; }
+            
+            /* --- PERUBAHAN CSS HEADER MOBILE --- */
+            header {
+                display: grid;
+                grid-template-areas:
+                    "title title"
+                    "logo1 logo2";
+                grid-template-columns: 1fr 1fr;
+                gap: 15px;
+                padding: 15px;
+            }
+            header h1 {
+                grid-area: title;
+            }
+            header .logo-kua {
+                grid-area: logo1;
+                justify-self: start; /* Rata kiri */
+            }
+            header .logo-masjid {
+                grid-area: logo2;
+                justify-self: end; /* Rata kanan */
+            }
+
             .teks-artikel { font-size: 1.1em; }
             .foto-samping { float: none; width: 100%; margin-right: 0; }
             
@@ -209,9 +229,9 @@
     <div id="majalah-wrapper" style="display:none; opacity:0;">
         <div class="container-majalah">
             <header>
-                <div class="logo"><a id="logoKuaLink" href="#" target="_blank"><img id="logoKuaImg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Logo KUA"></a></div>
+                <div class="logo logo-kua"><a id="logoKuaLink" href="#" target="_blank"><img id="logoKuaImg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Logo KUA"></a></div>
                 <h1 id="namaMajalah"></h1>
-                <div class="logo"><a id="logoMasjidLink" href="#" target="_blank"><img id="logoMasjidImg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Logo Masjid"></a></div>
+                <div class="logo logo-masjid"><a id="logoMasjidLink" href="#" target="_blank"><img id="logoMasjidImg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Logo Masjid"></a></div>
             </header>
             <main>
                 <article>
