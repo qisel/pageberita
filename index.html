@@ -111,21 +111,25 @@
             background-color: #ffffff;
             transition: opacity 0.5s ease-in;
         }
-        header, main {
+        header { 
             max-width: 800px;
             margin: 0 auto;
             box-sizing: border-box;
-        }
-        header { 
-            display: flex; justify-content: space-between; align-items: center; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
             padding: 15px 25px; 
             border-bottom: 4px solid var(--warna-aksen); 
+        }
+        main { 
+            /* Konten berita sekarang mentok dengan padding di sekelilingnya */
+            padding: 25px;
+            box-sizing: border-box;
         }
         header .logo img { height: 60px; width: auto; }
         header .logo a { display: inline-block; transition: transform 0.2s ease-in-out; }
         header .logo a:hover { transform: scale(1.05); }
         header h1 { font-size: clamp(1.5em, 4vw, 2.2em); color: var(--warna-utama); text-align: center; margin: 0; padding: 0 10px; }
-        main { padding: 25px; }
         article .judul-artikel { font-size: clamp(1.8em, 5vw, 2.2em); margin-top: 0; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px; color: #388e3c; }
         
         /* --- PERUBAHAN LAYOUT ARTIKEL --- */
