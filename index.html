@@ -134,19 +134,16 @@
         .skeleton-text { height: 1em; background-color: #e0e0e0; border-radius: 4px; }
         .skeleton-img { background-color: #e0e0e0; }
 
-        /* --- Elemen "Baca Selengkapnya" --- */
         .read-more-mobile { display: none; }
         
-        /* --- PERUBAHAN RESPONSIVE --- */
         @media (max-width: 650px) { 
-            body { padding: 0; padding-bottom: 85px; } /* Ruang untuk footer */
+            body { padding: 0; padding-bottom: 85px; }
             .admin-controls { margin: 0; border-radius: 0; border-left: none; border-right: none; padding: 20px 10px; } 
             header, main { padding-left: 15px; padding-right: 15px; }
             header { flex-direction: column; gap: 15px; }
             .teks-artikel { font-size: 1.1em; }
             .foto-samping { float: none; width: 100%; margin-right: 0; }
             
-            /* --- FOOTER MENEMPEL & EFEK BACA --- */
             footer {
                 position: fixed;
                 bottom: 0;
@@ -159,7 +156,7 @@
             .read-more-mobile {
                 display: block;
                 position: fixed;
-                bottom: 85px; /* Sesuaikan dengan tinggi footer */
+                bottom: 85px;
                 left: 0;
                 width: 100%;
                 padding: 30px 0 10px 0;
@@ -169,7 +166,7 @@
                 font-weight: bold;
                 font-style: italic;
                 z-index: 998;
-                pointer-events: none; /* Agar tidak menghalangi scroll */
+                pointer-events: none;
             }
         }
     </style>
@@ -182,7 +179,6 @@
         <button id="btn-edit-pengaturan" class="admin-btn">Edit Pengaturan</button>
     </div>
 
-    <!-- Modal Structure -->
     <div id="adminModal" class="modal-overlay">
         <div class="modal-content">
             <div class="modal-header">
@@ -193,7 +189,6 @@
         </div>
     </div>
 
-    <!-- Konten Majalah -->
     <div id="majalah-wrapper" style="display:none; opacity:0;">
         <div class="container-majalah">
             <header>
@@ -210,7 +205,6 @@
                     </div>
                 </article>
             </main>
-            <!-- Elemen baru dipindahkan sebelum footer -->
             <div class="read-more-mobile">...baca selengkapnya</div>
             <footer>
                 <div class="footer-content">
@@ -222,7 +216,6 @@
         </div>
     </div>
 
-    <!-- Skeleton Loader & Error Container -->
     <div id="skeleton-loader"><div class="container-majalah"><header class="skeleton"><div style="height: 90px;"></div></header><main><div class="judul-artikel skeleton skeleton-text" style="height: 2.2em; width: 80%; margin-bottom: 20px;"></div><div class="artikel-container"><div class="foto-samping skeleton skeleton-img" style="height: 250px;"></div><div class="teks-artikel"><p class="skeleton skeleton-text"></p><p class="skeleton skeleton-text"></p><p class="skeleton skeleton-text"></p></div></div></main><footer class="skeleton"><div style="height: 65px;"></div></footer></div></div>
     <div id="error-container" style="display: none; max-width: 800px; margin: 20px auto; padding: 20px; background-color: #f8d7da; border: 1px solid #f5c6cb; border-radius: 8px; color: #721c24;"><h2>Masalah Kritis</h2><p id="error-message"></p><p>Periksa kembali panduan penyiapan Google Sheets Anda.</p></div>
 
