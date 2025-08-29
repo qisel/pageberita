@@ -22,8 +22,8 @@
             justify-content: center;
             padding: 15px;
             border-radius: 12px;
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(5px);
+            background: rgba(255, 255, 255, 0.6); /* Lebih transparan */
+            backdrop-filter: blur(8px); /* Efek blur lebih kuat */
             border: 1px solid rgba(255, 255, 255, 0.2);
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
@@ -50,8 +50,8 @@
             z-index: 1000; backdrop-filter: blur(2px);
         }
         .modal-content {
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.85); /* Lebih transparan */
+            backdrop-filter: blur(12px); /* Efek blur lebih kuat */
             border: 1px solid rgba(255, 255, 255, 0.3);
             padding: 25px; border-radius: 12px; width: 90%; max-width: 550px;
             max-height: 90vh; overflow-y: auto; box-shadow: 0 5px 20px rgba(0,0,0,0.2);
@@ -62,25 +62,29 @@
         .modal-close-btn { font-size: 2em; font-weight: bold; cursor: pointer; color: #aaa; line-height: 1; }
         .modal-close-btn:hover { color: #333; }
 
-        /* --- FORMULIR DENGAN TOMBOL "TERAPKAN" PER INPUT --- */
+        /* --- FORMULIR DENGAN TOMBOL "TERAPKAN" PER INPUT (DIUBAH) --- */
         .setting-row {
             display: flex;
-            flex-wrap: wrap;
+            flex-wrap: nowrap; /* Mencegah item turun ke bawah */
             align-items: flex-end;
-            gap: 10px;
-            padding-bottom: 15px;
-            margin-bottom: 15px;
+            gap: 8px; /* Jarak lebih rapat */
+            padding-bottom: 12px;
+            margin-bottom: 12px;
             border-bottom: 1px solid #e0e0e0;
         }
-        .setting-input-group { flex-grow: 1; flex-basis: 300px; }
+        .setting-input-group {
+            flex-grow: 1;
+            min-width: 0; /* Penting agar flexbox bisa menyusut */
+        }
         .setting-input-group label { display: block; margin-bottom: 5px; font-weight: bold; color: #2e7d32; font-size: 0.9em; }
-        .input-with-history { display: flex; gap: 10px; }
+        .input-with-history { display: flex; gap: 8px; }
         .input-with-history input { flex-grow: 1; }
-        .input-with-history select { flex-basis: 120px; }
+        .input-with-history select { flex-basis: 100px; flex-shrink: 0; }
         .btn-apply {
-            padding: 8px 15px; font-size: 0.8em; font-weight: bold; border-radius: 6px; border: none;
+            padding: 8px 12px; font-size: 0.8em; font-weight: bold; border-radius: 6px; border: none;
             background-color: #1976d2; color: white; cursor: pointer; transition: background-color 0.3s;
             display: flex; align-items: center; justify-content: center; gap: 5px;
+            flex-shrink: 0; /* Mencegah tombol menyusut */
         }
         .btn-apply:hover { background-color: #1565c0; }
         
@@ -232,11 +236,21 @@
         }
 
         function populateSettingsForm() {
+            const shortenText = (text, maxLength = 25) => {
+                if (typeof text !== 'string' || text.length <= maxLength) return text;
+                return text.substring(0, maxLength) + '...';
+            };
+
             const createSettingRow = (key, label, inputType = 'text') => {
                 const settings = fullData.settings || { current: {}, history: {} };
                 const currentValue = settings.current[key] || '';
                 const historyItems = settings.history[key] || [];
-                let options = historyItems.map(item => `<option value="${escapeHTML(item)}">${escapeHTML(item)}</option>`).join('');
+                const keysToShorten = ['Link_Logo_KUA', 'Link_Logo_Masjid', 'Link_Facebook', 'Alamat', 'Medsos'];
+
+                let options = historyItems.map(item => {
+                    const displayText = keysToShorten.includes(key) ? shortenText(item) : item;
+                    return `<option value="${escapeHTML(item)}">${escapeHTML(displayText)}</option>`;
+                }).join('');
 
                 return `
                     <div class="setting-row">
@@ -351,7 +365,6 @@
         }
         
         function updateDOMForKey(key, value) {
-            const settings = fullData.settings.current;
             switch (key) {
                 case 'Nama_Majalah': document.getElementById('namaMajalah').innerText = value; break;
                 case 'Link_Logo_KUA': document.getElementById('logoKuaLink').href = value; document.getElementById('logoKuaImg').src = value; break;
@@ -370,7 +383,6 @@
             
             sendData(payload, button, 'settings', () => {
                 showNotification("Pengaturan diterapkan!", 'success', 'settings');
-                // Update data & DOM secara instan
                 fullData.settings.current[key] = value;
                 if (!fullData.settings.history[key]) fullData.settings.history[key] = [];
                 if (fullData.settings.history[key].indexOf(value) === -1) fullData.settings.history[key].push(value);
