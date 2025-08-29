@@ -102,21 +102,38 @@
         @keyframes spin { to { transform: rotate(360deg); } }
         
         .container-majalah { background-color: #ffffff; transition: opacity 0.5s ease-in; }
-        header, main, .footer-content {
+        
+        /* --- PERUBAHAN CSS HEADER --- */
+        header { 
+            max-width: 800px;
+            margin: 0 auto;
+            box-sizing: border-box;
+            display: flex; 
+            align-items: center; /* Mengatur item sejajar vertikal */
+            padding: 15px 25px; 
+            border-bottom: 4px solid var(--warna-aksen); 
+        }
+        header .logo {
+            flex-shrink: 0; /* Mencegah logo mengecil */
+        }
+        header .logo img { height: 60px; width: auto; }
+        header .logo a { display: inline-block; transition: transform 0.2s ease-in-out; }
+        header .logo a:hover { transform: scale(1.05); }
+        header h1 { 
+            font-size: clamp(1.5em, 4vw, 2.2em); 
+            color: var(--warna-utama); 
+            text-align: center; 
+            margin: 0; 
+            padding: 0 15px;
+            flex-grow: 1; /* Membuat judul mengisi ruang kosong di tengah */
+        }
+
+        main, .footer-content {
             max-width: 800px;
             margin: 0 auto;
             box-sizing: border-box;
         }
-        header { 
-            display: flex; justify-content: space-between; align-items: center; 
-            padding: 15px 25px; 
-            border-bottom: 4px solid var(--warna-aksen); 
-        }
         main { padding: 25px; }
-        header .logo img { height: 60px; width: auto; }
-        header .logo a { display: inline-block; transition: transform 0.2s ease-in-out; }
-        header .logo a:hover { transform: scale(1.05); }
-        header h1 { font-size: clamp(1.5em, 4vw, 2.2em); color: var(--warna-utama); text-align: center; margin: 0; padding: 0 10px; }
         article .judul-artikel { font-size: clamp(1.8em, 5vw, 2.2em); margin-top: 0; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px; color: #388e3c; }
         
         .artikel-container::after { content: ""; clear: both; display: table; }
