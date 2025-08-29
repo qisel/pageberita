@@ -116,6 +116,8 @@
         header .logo img { height: 60px; width: auto; }
         header .logo a { display: inline-block; transition: transform 0.2s ease-in-out; }
         header .logo a:hover { transform: scale(1.05); }
+        
+        /* --- PERUBAHAN CSS JUDUL HALAMAN --- */
         header h1 { 
             font-size: clamp(1.5em, 4vw, 2.2em); 
             color: var(--warna-utama); 
@@ -123,6 +125,11 @@
             margin: 0; 
             padding: 0 15px;
             flex-grow: 1;
+            /* Properti baru untuk menangani judul yang panjang */
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            min-width: 0; /* Trik agar flexbox bisa mengecilkan elemen */
         }
 
         main, .footer-content {
@@ -150,13 +157,11 @@
 
         .read-more-mobile { display: none; }
         
-        /* --- PERUBAHAN RESPONSIVE --- */
         @media (max-width: 650px) { 
             body { padding: 0; padding-bottom: 85px; }
             .admin-controls { margin: 0; border-radius: 0; border-left: none; border-right: none; padding: 20px 10px; } 
             main { padding: 15px; }
             
-            /* --- PERUBAHAN CSS HEADER MOBILE --- */
             header {
                 padding: 10px 15px;
             }
