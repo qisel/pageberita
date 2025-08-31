@@ -74,16 +74,60 @@
         }
         .setting-input-group { flex-grow: 1; min-width: 0; }
         .setting-input-group label { display: block; margin-bottom: 5px; font-weight: bold; color: #2e7d32; font-size: 0.9em; }
-        .input-with-history { display: flex; gap: 8px; }
-        .input-with-history input { flex-grow: 1; }
+        .input-with-history { display: flex; gap: 8px; align-items: flex-start; }
+        .input-with-history input, .input-with-history textarea { flex-grow: 1; }
         .input-with-history select { flex-basis: 100px; flex-shrink: 0; }
         .btn-apply {
             padding: 8px 12px; font-size: 0.8em; font-weight: bold; border-radius: 6px; border: none;
             background-color: #1976d2; color: white; cursor: pointer; transition: background-color 0.3s;
             display: flex; align-items: center; justify-content: center; gap: 5px;
             flex-shrink: 0;
+            margin-bottom: 2px;
         }
         .btn-apply:hover { background-color: #1565c0; }
+
+        /* --- BAGIAN GENERATOR AI --- */
+        .ai-generator-section {
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+            border-bottom: 1px dashed #aaa;
+        }
+        .ai-generator-section p {
+            font-weight: bold;
+            color: #333;
+            margin-top: 0;
+            text-align: center;
+        }
+        .ai-prompt-group {
+            display: flex;
+            gap: 8px;
+            align-items: flex-end;
+        }
+        .ai-prompt-group .form-group {
+            flex-grow: 1;
+            margin-bottom: 0;
+        }
+        .ai-prompt-group .btn-update {
+            flex-shrink: 0;
+            width: auto;
+            font-size: 0.9em;
+            padding: 10px 15px;
+        }
+        #image-preview-container {
+            margin-top: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100px;
+            background-color: #e0e0e0;
+            border-radius: 6px;
+        }
+        #image-preview {
+            max-width: 100%;
+            max-height: 150px;
+            border-radius: 4px;
+            display: none;
+        }
         
         .notification { padding: 12px; margin-bottom: 15px; border-radius: 5px; text-align: center; font-weight: bold; display: none; border: 1px solid transparent; opacity: 0; transition: opacity 0.5s; }
         .notification.show { display: block; opacity: 1; }
@@ -117,7 +161,6 @@
         header .logo a { display: inline-block; transition: transform 0.2s ease-in-out; }
         header .logo a:hover { transform: scale(1.05); }
         
-        /* --- PERUBAHAN CSS JUDUL HALAMAN --- */
         header h1 { 
             font-size: clamp(1.5em, 4vw, 2.2em); 
             color: var(--warna-utama); 
@@ -125,11 +168,10 @@
             margin: 0; 
             padding: 0 15px;
             flex-grow: 1;
-            /* Properti baru untuk menangani judul yang panjang */
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            min-width: 0; /* Trik agar flexbox bisa mengecilkan elemen */
+            min-width: 0;
         }
 
         main, .footer-content {
@@ -162,12 +204,8 @@
             .admin-controls { margin: 0; border-radius: 0; border-left: none; border-right: none; padding: 20px 10px; } 
             main { padding: 15px; }
             
-            header {
-                padding: 10px 15px;
-            }
-            header h1 {
-                padding: 0 10px;
-            }
+            header { padding: 10px 15px; }
+            header h1 { padding: 0 10px; }
 
             .teks-artikel { font-size: 1.1em; }
             .foto-samping { float: none; width: 100%; margin-right: 0; }
@@ -257,13 +295,9 @@
         const modalBody = document.getElementById('modalBody');
 
         function openModal(type) {
-            if (type === 'new-article') {
-                isEditingArticle = false;
-                modalTitle.innerText = 'Tulis Berita Baru';
-                populateArticleForm();
-            } else if (type === 'edit-article') {
-                isEditingArticle = true;
-                modalTitle.innerText = 'Edit Berita Terakhir';
+            if (type === 'new-article' || type === 'edit-article') {
+                isEditingArticle = type === 'edit-article';
+                modalTitle.innerText = isEditingArticle ? 'Edit Berita Terakhir' : 'Tulis Berita Baru';
                 populateArticleForm();
             } else if (type === 'settings') {
                 modalTitle.innerText = 'Edit Pengaturan Umum';
@@ -298,50 +332,55 @@
             const buttonText = isEditingArticle ? 'Perbarui Berita' : 'Publikasikan';
             modalBody.innerHTML = `
                 <div id="articleNotification" class="notification"></div>
+                <div class="ai-generator-section">
+                    <p>✨ Buat Teks & Saran Gambar Otomatis</p>
+                    <div class="ai-prompt-group">
+                        <div class="form-group">
+                            <label for="aiTextPrompt">Topik Berita:</label>
+                            <input type="text" id="aiTextPrompt" placeholder="Contoh: Aksi bersih-bersih masjid...">
+                        </div>
+                        <button class="btn-update" onclick="generateWithGemini(this)">
+                            <span class="btn-text">Buat</span>
+                            <div class="spinner"></div>
+                        </button>
+                    </div>
+                </div>
                 <div class="form-group"><label>Judul Berita:</label><input type="text" id="modalJudul" value="${escapeHTML(article.title || '')}"></div>
-                <div class="form-group"><label>Link/URL Foto:</label><input type="url" id="modalFotoLink" value="${escapeHTML(article.imageUrl || '')}"></div>
                 <div class="form-group"><label>Isi Berita:</label><textarea id="modalIsi">${escapeHTML(article.content || '')}</textarea></div>
+                <hr style="border: 1px dashed #aaa; margin: 20px 0;">
+                <div class="ai-generator-section" style="border-top: none; padding-top: 0;">
+                     <p>🎨 Buat Gambar dari Saran di Bawah</p>
+                     <div class="ai-prompt-group">
+                         <div class="form-group">
+                            <label for="aiImagePrompt">Saran Prompt Gambar:</label>
+                            <input type="text" id="aiImagePrompt">
+                        </div>
+                        <button class="btn-update" onclick="generateImageFromArticle(this)">
+                            <span class="btn-text">Buat</span>
+                            <div class="spinner"></div>
+                        </button>
+                    </div>
+                    <div id="image-preview-container"><img id="image-preview" src="" alt="Image Preview"></div>
+                </div>
+                <div class="form-group"><label>Link/URL Foto:</label><input type="url" id="modalFotoLink" value="${escapeHTML(article.imageUrl || '')}"></div>
                 <button class="btn-update" onclick="updateArticle(event)"><span class="btn-text">${buttonText}</span><div class="spinner"></div></button>
             `;
         }
 
         function populateSettingsForm() {
-            const shortenText = (text, maxLength = 25) => {
-                if (typeof text !== 'string' || text.length <= maxLength) return text;
-                return text.substring(0, maxLength) + '...';
-            };
-
-            const createSettingRow = (key, label, inputType = 'text') => {
+            const createSettingRow = (key, label, inputType = 'text', isTextarea = false) => {
                 const settings = fullData.settings || { current: {}, history: {} };
                 const currentValue = settings.current[key] || '';
                 const historyItems = settings.history[key] || [];
-                const keysToShorten = ['Link_Logo_KUA', 'Link_Logo_Masjid', 'Link_Facebook', 'Alamat', 'Medsos', 'No_HP'];
-
-                let options = historyItems.map(item => {
-                    const displayText = keysToShorten.includes(key) ? shortenText(item) : item;
-                    return `<option value="${escapeHTML(item)}">${escapeHTML(displayText)}</option>`;
-                }).join('');
-
-                return `
-                    <div class="setting-row">
-                        <div class="setting-input-group">
-                            <label for="modal${key}">${label}:</label>
-                            <div class="input-with-history">
-                                <input type="${inputType}" id="modal${key}" value="${escapeHTML(currentValue)}">
-                                <select onchange="document.getElementById('modal${key}').value = this.value;">
-                                    <option value="">Riwayat</option>
-                                    ${options}
-                                </select>
-                            </div>
-                        </div>
-                        <button class="btn-apply" onclick="updateSingleSetting('${key}', this)">
-                            <span class="btn-text">Terapkan</span>
-                            <div class="spinner" style="width:14px; height:14px; border-width:2px;"></div>
-                        </button>
-                    </div>`;
+                
+                let inputElement = isTextarea 
+                    ? `<textarea id="modal${key}" rows="5" style="width:100%">${escapeHTML(currentValue)}</textarea>`
+                    : `<input type="${inputType}" id="modal${key}" value="${escapeHTML(currentValue)}">`;
+                let historyDropdown = `<select onchange="document.getElementById('modal${key}').value = this.value;"><option value="">Riwayat</option>${historyItems.map(item => `<option value="${escapeHTML(item)}">${escapeHTML(shortenText(item, key === 'AI_System_Prompt' || key === 'AI_Image_Prompt' ? 40 : 25))}</option>`).join('')}</select>`;
+                let inputHtml = `<div class="input-with-history">${inputElement}${historyDropdown}</div>`;
+                return `<div class="setting-row"><div class="setting-input-group"><label for="modal${key}">${label}:</label>${inputHtml}</div><button class="btn-apply" onclick="updateSingleSetting('${key}', this)"><span class="btn-text">Terapkan</span><div class="spinner" style="width:14px; height:14px; border-width:2px;"></div></button></div>`;
             };
-            modalBody.innerHTML = `
-                <div id="settingsNotification" class="notification"></div>
+            modalBody.innerHTML = `<div id="settingsNotification" class="notification"></div>
                 ${createSettingRow('Nama_Majalah', 'Nama Majalah')}
                 ${createSettingRow('Link_Logo_KUA', 'Link Logo KUA', 'url')}
                 ${createSettingRow('Link_Logo_Masjid', 'Link Logo Masjid', 'url')}
@@ -349,32 +388,39 @@
                 ${createSettingRow('Link_Facebook', 'Link Halaman Facebook', 'url')}
                 ${createSettingRow('No_HP', 'Nomor HP')}
                 ${createSettingRow('Alamat', 'Alamat Sekretariat')}
+                ${createSettingRow('AI_System_Prompt', 'Prompt Teks AI', 'text', true)}
+                ${createSettingRow('AI_Image_Prompt', 'Template Prompt Gambar AI', 'text', true)}
             `;
+        }
+        
+        function shortenText(text, maxLength = 25) {
+            if (typeof text !== 'string' || text.length <= maxLength) return text;
+            return text.replace(/\n/g, ' ').substring(0, maxLength) + '...';
         }
 
         function displayContent(data) {
             const article = data.article || {}; 
             const settings = data.settings.current || {};
-            
+            const formatUrl = (url) => {
+                if (!url || typeof url !== 'string' || url.trim() === '') return '#';
+                if (url.startsWith('http://') || url.startsWith('https://')) return url;
+                return `https://${url}`;
+            };
             document.getElementById('artikelJudul').innerText = article.title || "Belum Ada Berita";
             document.getElementById('artikelFoto').src = article.imageUrl || "https://placehold.co/250x250?text=Gambar";
             const teksContainer = document.getElementById('artikelTeks');
             teksContainer.innerHTML = '';
             if(article.content){ article.content.split('\n').forEach(p => { if(p.trim() !== ''){ const newP = document.createElement('p'); newP.innerText = p; teksContainer.appendChild(newP); }}); } else { teksContainer.innerHTML = "<p>Silakan masukkan berita pertama.</p>"; }
-            
             document.getElementById('namaMajalah').innerText = settings.Nama_Majalah || 'MAJALAH KITA';
-            document.getElementById('logoKuaLink').href = settings.Link_Logo_KUA || '#';
+            document.getElementById('logoKuaLink').href = formatUrl(settings.Link_Logo_KUA);
             document.getElementById('logoKuaImg').src = settings.Link_Logo_KUA || 'https://via.placeholder.com/150x150.png?text=Logo+KUA';
-            document.getElementById('logoMasjidLink').href = settings.Link_Logo_Masjid || '#';
+            document.getElementById('logoMasjidLink').href = formatUrl(settings.Link_Logo_Masjid);
             document.getElementById('logoMasjidImg').src = settings.Link_Logo_Masjid || 'https://via.placeholder.com/150x150.png?text=Logo+Masjid';
-            
             const medsosDiv = document.getElementById('footerMedsos');
-            medsosDiv.innerHTML = `<a href="${settings.Link_Facebook || '#'}" target="_blank" rel="noopener noreferrer">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16"><path d="M16 8.049c0-4.446-3.582-8.05-8-8.05C3.58 0-.002 3.603-.002 8.05c0 4.017 2.926 7.347 6.75 7.951v-5.625h-2.03V8.05H6.75V6.275c0-2.017 1.195-3.131 3.022-3.131.876 0 1.791.157 1.791.157v1.98h-1.009c-.993 0-1.303.621-1.303 1.258v1.51h2.218l-.354 2.326H9.25V16c3.824-.604 6.75-3.934 6.75-7.951z"/></svg>
-                <span>${settings.Medsos || 'Facebook'}</span>
-            </a>`;
+            medsosDiv.innerHTML = `<a id="medsosLink" href="${formatUrl(settings.Link_Facebook)}" target="_blank" rel="noopener noreferrer"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16"><path d="M16 8.049c0-4.446-3.582-8.05-8-8.05C3.58 0-.002 3.603-.002 8.05c0 4.017 2.926 7.347 6.75 7.951v-5.625h-2.03V8.05H6.75V6.275c0-2.017 1.195-3.131 3.022-3.131.876 0 1.791.157 1.791.157v1.98h-1.009c-.993 0-1.303.621-1.303 1.258v1.51h2.218l-.354 2.326H9.25V16c3.824-.604 6.75-3.934 6.75-7.951z"/></svg><span>${settings.Medsos || 'Facebook'}</span></a>`;
             document.getElementById('footerKontak').innerHTML = `<strong>Nomor HP:</strong> ${settings.No_HP || 'N/A'}`;
             document.getElementById('footerAlamat').innerHTML = `<strong>Sekretariat:</strong> ${settings.Alamat || 'N/A'}`;
+            setupClickTrackers();
         }
         
         async function loadAllContent() {
@@ -382,7 +428,6 @@
             const mainContent = document.getElementById('majalah-wrapper');
             const errorContainer = document.getElementById('error-container');
             skeleton.style.display = 'block'; mainContent.style.display = 'none'; errorContainer.style.display = 'none';
-
             try {
                 const response = await fetch(GOOGLE_SHEET_WEB_APP_URL);
                 if (!response.ok) throw new Error(`Network response error: ${response.statusText}`);
@@ -406,7 +451,6 @@
         async function sendData(payload, button, panel, successCallback) {
             button.classList.add('loading');
             button.disabled = true;
-
             try {
                 const response = await fetch(GOOGLE_SHEET_WEB_APP_URL, {
                     method: 'POST', mode: 'cors', headers: { 'Content-Type': 'text/plain;charset=utf-8', },
@@ -434,13 +478,128 @@
             }
         }
         
+        window.generateWithGemini = async function(button) {
+            const promptInput = document.getElementById('aiTextPrompt');
+            const userPrompt = promptInput.value.trim();
+            if (!userPrompt) {
+                showNotification("Harap masukkan topik berita untuk AI.", 'error', 'article');
+                return;
+            }
+            button.classList.add('loading');
+            button.disabled = true;
+            
+            const systemPrompt = fullData.settings?.current?.AI_System_Prompt;
+            const apiKey = "AIzaSyD0lUbFs0Nv0e62l-d5TK5uJsw7IbbrzLk";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+            
+            const payload = {
+                contents: [{ parts: [{ text: userPrompt }] }],
+                tools: [{ "google_search": {} }]
+            };
+            
+            if (systemPrompt && systemPrompt.trim() !== '') {
+                payload.systemInstruction = { parts: [{ text: systemPrompt }] };
+            }
+            
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
+                });
+                if (!response.ok) throw new Error(`API request failed with status ${response.status}`);
+                const result = await response.json();
+                const candidate = result.candidates?.[0];
+                let generatedText = candidate?.content?.parts?.[0]?.text;
+                if (!generatedText) throw new Error("Respon dari AI kosong atau tidak valid.");
+                
+                let title = '', content = '', imagePrompt = '';
+                const titleMatch = generatedText.match(/\[JUDUL\]\s*([\s\S]*?)\s*\[ISI\]/);
+                const contentMatch = generatedText.match(/\[ISI\]\s*([\s\S]*?)\s*\[PROMPT_GAMBAR\]/);
+                const imagePromptMatch = generatedText.match(/\[PROMPT_GAMBAR\]\s*([\s\S]*)/);
+
+                if (titleMatch && contentMatch && imagePromptMatch) {
+                    title = titleMatch[1].trim();
+                    content = contentMatch[1].trim();
+                    imagePrompt = imagePromptMatch[1].trim();
+                } else {
+                    const lines = generatedText.split('\n').filter(line => line.trim() !== '');
+                    if (lines.length > 1) {
+                        title = lines[0].trim();
+                        content = lines.slice(1).join('\n').trim();
+                    } else { content = generatedText.trim(); }
+                }
+                document.getElementById('modalJudul').value = title;
+                document.getElementById('modalIsi').value = content;
+                document.getElementById('aiImagePrompt').value = imagePrompt;
+                showNotification("Konten berhasil dibuat oleh AI!", 'success', 'article');
+            } catch (error) {
+                console.error("Error generating content with AI:", error);
+                showNotification("Gagal membuat konten dengan AI. Coba lagi.", 'error', 'article');
+            } finally {
+                button.classList.remove('loading');
+                button.disabled = false;
+            }
+        };
+
+        window.generateImageFromArticle = async function(button) {
+            const imagePrompt = document.getElementById('aiImagePrompt').value.trim();
+            if (!imagePrompt) {
+                showNotification("Harap buat teks berita terlebih dahulu untuk mendapatkan saran prompt gambar.", 'error', 'article');
+                return;
+            }
+            button.classList.add('loading');
+            button.disabled = true;
+
+            const defaultImagePromptTemplate = "fotorealistik, [DESKRIPSI_GAMBAR]";
+            let imageSystemPrompt = fullData.settings?.current?.AI_Image_Prompt || defaultImagePromptTemplate;
+            
+            const finalImagePrompt = imageSystemPrompt.replace('[DESKRIPSI_GAMBAR]', imagePrompt.substring(0, 500)); // Truncate to be safe
+            
+            const apiKey = "AIzaSyD0lUbFs0Nv0e62l-d5TK5uJsw7IbbrzLk";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${apiKey}`;
+            const payload = { instances: [{ prompt: finalImagePrompt }], parameters: { "sampleCount": 1 } };
+            
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
+                });
+                if (!response.ok) throw new Error(`API request failed with status ${response.status}`);
+                const result = await response.json();
+                const base64Data = result.predictions?.[0]?.bytesBase64Encoded;
+                if (!base64Data) throw new Error("Respon gambar dari AI kosong atau tidak valid.");
+
+                const imageUrl = `data:image/png;base64,${base64Data}`;
+                document.getElementById('modalFotoLink').value = imageUrl;
+                
+                const previewImg = document.getElementById('image-preview');
+                previewImg.src = imageUrl;
+                previewImg.style.display = 'block';
+
+                showNotification("Gambar berhasil dibuat oleh AI!", 'success', 'article');
+            } catch (error) {
+                console.error("Error generating image with AI:", error);
+                let errorMessage = "Gagal membuat gambar dengan AI. Coba lagi.";
+                if (error.message.includes("400")) {
+                    errorMessage = "Gagal membuat gambar: Deskripsi terlalu panjang atau tidak valid. Coba perpendek saran prompt gambar.";
+                }
+                showNotification(errorMessage, 'error', 'article');
+            } finally {
+                button.classList.remove('loading');
+                button.disabled = false;
+            }
+        };
+
         function updateDOMForKey(key, value) {
+            const formatUrl = (url) => {
+                if (!url || typeof url !== 'string' || url.trim() === '') return '#';
+                if (url.startsWith('http://') || url.startsWith('https://')) { return url; }
+                return `https://${url}`;
+            };
             switch (key) {
                 case 'Nama_Majalah': document.getElementById('namaMajalah').innerText = value; break;
-                case 'Link_Logo_KUA': document.getElementById('logoKuaLink').href = value; document.getElementById('logoKuaImg').src = value; break;
-                case 'Link_Logo_Masjid': document.getElementById('logoMasjidLink').href = value; document.getElementById('logoMasjidImg').src = value; break;
+                case 'Link_Logo_KUA': document.getElementById('logoKuaLink').href = formatUrl(value); document.getElementById('logoKuaImg').src = value || 'https://via.placeholder.com/150x150.png?text=Logo+KUA'; break;
+                case 'Link_Logo_Masjid': document.getElementById('logoMasjidLink').href = formatUrl(value); document.getElementById('logoMasjidImg').src = value || 'https://via.placeholder.com/150x150.png?text=Logo+Masjid'; break;
                 case 'Medsos': document.querySelector('#footerMedsos a span').innerText = value; break;
-                case 'Link_Facebook': document.querySelector('#footerMedsos a').href = value; break;
+                case 'Link_Facebook': document.querySelector('#footerMedsos a').href = formatUrl(value); break;
                 case 'No_HP': document.getElementById('footerKontak').innerHTML = `<strong>Nomor HP:</strong> ${value}`; break;
                 case 'Alamat': document.getElementById('footerAlamat').innerHTML = `<strong>Sekretariat:</strong> ${value}`; break;
             }
@@ -478,6 +637,28 @@
             return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
         }
         
+        function trackAndNavigate(linkId, event) {
+            event.preventDefault();
+            const destinationUrl = event.currentTarget.href;
+            if (!destinationUrl || destinationUrl.endsWith('#')) return;
+
+            const payload = { type: 'click', data: { linkId: linkId, destinationUrl: destinationUrl } };
+            fetch(GOOGLE_SHEET_WEB_APP_URL, {
+                method: 'POST', mode: 'no-cors', body: JSON.stringify(payload)
+            }).catch(err => console.error("Gagal melacak klik:", err));
+
+            window.open(destinationUrl, '_blank');
+        }
+
+        function setupClickTrackers() {
+            document.getElementById('logoKuaLink').addEventListener('click', (e) => trackAndNavigate('logo_kua', e));
+            document.getElementById('logoMasjidLink').addEventListener('click', (e) => trackAndNavigate('logo_masjid', e));
+            const medsosLink = document.getElementById('medsosLink');
+            if (medsosLink) {
+                medsosLink.addEventListener('click', (e) => trackAndNavigate('facebook', e));
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', loadAllContent);
     </script>
 </body>
