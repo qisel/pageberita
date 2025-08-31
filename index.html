@@ -333,7 +333,7 @@
             modalBody.innerHTML = `
                 <div id="articleNotification" class="notification"></div>
                 <div class="ai-generator-section">
-                    <p>✨ Buat Teks & Saran Gambar Otomatis</p>
+                    <p>✨ Buat Teks Otomatis dengan AI</p>
                     <div class="ai-prompt-group">
                         <div class="form-group">
                             <label for="aiTextPrompt">Topik Berita:</label>
@@ -349,17 +349,11 @@
                 <div class="form-group"><label>Isi Berita:</label><textarea id="modalIsi">${escapeHTML(article.content || '')}</textarea></div>
                 <hr style="border: 1px dashed #aaa; margin: 20px 0;">
                 <div class="ai-generator-section" style="border-top: none; padding-top: 0;">
-                     <p>🎨 Buat Gambar dari Saran di Bawah</p>
-                     <div class="ai-prompt-group">
-                         <div class="form-group">
-                            <label for="aiImagePrompt">Saran Prompt Gambar:</label>
-                            <input type="text" id="aiImagePrompt">
-                        </div>
-                        <button class="btn-update" onclick="generateImageFromArticle(this)">
-                            <span class="btn-text">Buat</span>
-                            <div class="spinner"></div>
-                        </button>
-                    </div>
+                     <p>🎨 Buat Gambar dari Berita di Atas</p>
+                     <button class="btn-update" onclick="generateImageFromArticle(this)">
+                        <span class="btn-text">Buat Gambar dengan AI</span>
+                        <div class="spinner"></div>
+                    </button>
                     <div id="image-preview-container"><img id="image-preview" src="" alt="Image Preview"></div>
                 </div>
                 <div class="form-group"><label>Link/URL Foto:</label><input type="url" id="modalFotoLink" value="${escapeHTML(article.imageUrl || '')}"></div>
@@ -552,7 +546,7 @@
             const defaultImagePromptTemplate = "fotorealistik, [DESKRIPSI_GAMBAR]";
             let imageSystemPrompt = fullData.settings?.current?.AI_Image_Prompt || defaultImagePromptTemplate;
             
-            const finalImagePrompt = imageSystemPrompt.replace('[DESKRIPSI_GAMBAR]', imagePrompt.substring(0, 500)); // Truncate to be safe
+            const finalImagePrompt = imageSystemPrompt.replace('[DESKRIPSI_GAMBAR]', imagePrompt.substring(0, 500));
             
             const apiKey = "AIzaSyD0lUbFs0Nv0e62l-d5TK5uJsw7IbbrzLk";
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${apiKey}`;
