@@ -168,7 +168,12 @@
         
         .artikel-container::after { content: ""; clear: both; display: table; }
         .foto-samping { float: left; width: 45%; max-width: 320px; margin-right: 20px; margin-bottom: 15px; }
-        .foto-samping img { width: 100%; height: auto; display: block; border-radius: 5px; background-color: #eee; }
+        .foto-samping-inner { display: flex; flex-wrap: wrap; }
+        .foto-samping-inner a { display: block; box-sizing: border-box; padding: 0; }
+        .foto-samping-inner img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .foto-samping[data-count="1"] a { width: 100%; }
+        .foto-samping[data-count="2"] a { width: 50%; }
+        .foto-samping[data-count="3"] a, .foto-samping[data-count="4"] a { width: 50%; }
         .teks-artikel { text-align: justify; line-height: 1.6; font-size: 1em; }
         
         footer { background-color: var(--warna-utama); color: #ffffff; padding: 20px 0; text-align: center; }
@@ -180,55 +185,22 @@
         @keyframes skeleton-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
         .skeleton-text { height: 1em; background-color: #e0e0e0; border-radius: 4px; }
         .skeleton-img { background-color: #e0e0e0; }
-
         .read-more-mobile { display: none; }
         
         @media (max-width: 650px) { 
             body { padding: 0; padding-bottom: 85px; }
             .admin-controls { margin: 0; border-radius: 0; border-left: none; border-right: none; padding: 15px 10px; } 
             main { padding: 15px; }
-            
             header { padding: 10px 15px; }
-            
-            /* --- PERUBAHAN FONT MOBILE --- */
-            header h1 {
-                padding: 0 10px;
-                font-size: clamp(1.8em, 7vw, 2.8em); /* Diperbesar agar maksimal di tempatnya */
-            }
-            article .judul-artikel {
-                font-size: 1.4em; /* Diperkecil dari ukuran desktop */
-            }
-            .footer-content {
-                font-size: 0.75em; /* Diperkecil dari 0.9em */
-            }
+            header h1 { padding: 0 10px; font-size: clamp(1.8em, 7vw, 2.8em); }
+            article .judul-artikel { font-size: 1.4em; }
+            .footer-content { font-size: 0.75em; }
 
             .teks-artikel { font-size: 1.1em; }
-            .foto-samping { float: left; width: 30%; margin-right: 15px; }
+            .foto-samping { float: none; width: 100%; margin-right: 0; }
             
-            footer {
-                position: fixed;
-                bottom: 0;
-                left: 0;
-                width: 100%;
-                z-index: 999;
-                box-shadow: 0 -3px 10px rgba(0,0,0,0.15);
-                box-sizing: border-box;
-            }
-            .read-more-mobile {
-                display: block;
-                position: fixed;
-                bottom: 85px;
-                left: 0;
-                width: 100%;
-                padding: 30px 0 10px 0;
-                background: linear-gradient(to bottom, transparent, #f8f9fa 50%);
-                text-align: center;
-                color: var(--warna-utama);
-                font-weight: bold;
-                font-style: italic;
-                z-index: 998;
-                pointer-events: none;
-            }
+            footer { position: fixed; bottom: 0; left: 0; width: 100%; z-index: 999; box-shadow: 0 -3px 10px rgba(0,0,0,0.15); box-sizing: border-box; }
+            .read-more-mobile { display: block; position: fixed; bottom: 85px; left: 0; width: 100%; padding: 30px 0 10px 0; background: linear-gradient(to bottom, transparent, #f8f9fa 50%); text-align: center; color: var(--warna-utama); font-weight: bold; font-style: italic; z-index: 998; pointer-events: none; }
         }
     </style>
 </head>
@@ -325,14 +297,7 @@
         function populateArticleForm() {
             const article = isEditingArticle ? (fullData.article || { imageUrls: [''] }) : { imageUrls: [''] };
             const buttonText = isEditingArticle ? 'Perbarui Berita' : 'Publikasikan';
-
-            let photoInputsHtml = article.imageUrls.map((url, index) => `
-                <div class="ai-prompt-group" style="margin-bottom: 10px;">
-                    <input type="url" class="photo-link-input" value="${escapeHTML(url || '')}" placeholder="Link foto ${index + 1}">
-                    <button class="btn-update" onclick="removePhotoInput(this)" style="background: #dc3545; width: auto; padding: 8px 10px;">-</button>
-                </div>
-            `).join('');
-
+            let photoInputsHtml = article.imageUrls.map((url, index) => `<div class="ai-prompt-group" style="margin-bottom: 10px;"><input type="url" class="photo-link-input" value="${escapeHTML(url || '')}" placeholder="Link foto ${index + 1}"><button class="btn-update" onclick="removePhotoInput(this)" style="background: #dc3545; width: auto; padding: 8px 10px;">-</button></div>`).join('');
             modalBody.innerHTML = `
                 <div id="articleNotification" class="notification"></div>
                 <div class="ai-generator-section">
@@ -356,16 +321,12 @@
 
         window.addPhotoInput = function() {
             const container = document.getElementById('photo-inputs-container');
-            const inputCount = container.children.length;
-            if (inputCount < 4) {
-                const newIndex = inputCount + 1;
+            if (container.children.length < 4) {
+                const newIndex = container.children.length + 1;
                 const newPhotoInput = document.createElement('div');
                 newPhotoInput.className = 'ai-prompt-group';
                 newPhotoInput.style.marginBottom = '10px';
-                newPhotoInput.innerHTML = `
-                    <input type="url" class="photo-link-input" placeholder="Link foto ${newIndex}">
-                    <button class="btn-update" onclick="removePhotoInput(this)" style="background: #dc3545; width: auto; padding: 8px 10px;">-</button>
-                `;
+                newPhotoInput.innerHTML = `<input type="url" class="photo-link-input" placeholder="Link foto ${newIndex}"><button class="btn-update" onclick="removePhotoInput(this)" style="background: #dc3545; width: auto; padding: 8px 10px;">-</button>`;
                 container.appendChild(newPhotoInput);
             }
             checkPhotoLimit();
@@ -388,7 +349,6 @@
             const createSettingRow = (key, label, inputType = 'text', isTextarea = false) => {
                 const settings = fullData.settings || { current: {} };
                 const currentValue = settings.current[key] || '';
-                
                 let inputElement = isTextarea 
                     ? `<textarea id="modal${key}" rows="5" style="width:100%">${escapeHTML(currentValue)}</textarea>`
                     : `<input type="${inputType}" id="modal${key}" value="${escapeHTML(currentValue)}">`;
