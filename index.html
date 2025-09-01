@@ -18,9 +18,9 @@
             margin: 20px auto;
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 8px;
             justify-content: center;
-            padding: 15px;
+            padding: 10px;
             border-radius: 12px;
             background: rgba(255, 255, 255, 0.6);
             backdrop-filter: blur(8px);
@@ -28,8 +28,8 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
         .admin-btn {
-            padding: 8px 18px;
-            font-size: 0.9em;
+            padding: 6px 14px;
+            font-size: 0.8em;
             font-weight: bold;
             border-radius: 8px;
             border: none;
@@ -53,13 +53,14 @@
             background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.3);
-            padding: 25px; border-radius: 12px; width: 90%; max-width: 550px;
+            padding: 20px; border-radius: 12px; width: 90%; 
+            max-width: 450px;
             max-height: 90vh; overflow-y: auto; box-shadow: 0 5px 20px rgba(0,0,0,0.2);
             position: relative;
         }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ddd; padding-bottom: 15px; margin-bottom: 20px; }
-        .modal-header h2 { margin: 0; color: var(--warna-utama); }
-        .modal-close-btn { font-size: 2em; font-weight: bold; cursor: pointer; color: #aaa; line-height: 1; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ddd; padding-bottom: 10px; margin-bottom: 15px; }
+        .modal-header h2 { margin: 0; color: var(--warna-utama); font-size: 1.2em; }
+        .modal-close-btn { font-size: 1.8em; font-weight: bold; cursor: pointer; color: #aaa; line-height: 1; }
         .modal-close-btn:hover { color: #333; }
 
         /* --- FORMULIR DENGAN TOMBOL "TERAPKAN" PER INPUT --- */
@@ -73,12 +74,10 @@
             border-bottom: 1px solid #e0e0e0;
         }
         .setting-input-group { flex-grow: 1; min-width: 0; }
-        .setting-input-group label { display: block; margin-bottom: 5px; font-weight: bold; color: #2e7d32; font-size: 0.9em; }
-        .input-with-history { display: flex; gap: 8px; align-items: flex-start; }
-        .input-with-history input, .input-with-history textarea { flex-grow: 1; }
-        .input-with-history select { flex-basis: 100px; flex-shrink: 0; }
+        .setting-input-group label { display: block; margin-bottom: 5px; font-weight: bold; color: #2e7d32; font-size: 0.8em; }
+        .input-with-history input, .input-with-history textarea { font-size: 0.9em; padding: 8px; }
         .btn-apply {
-            padding: 8px 12px; font-size: 0.8em; font-weight: bold; border-radius: 6px; border: none;
+            padding: 7px 10px; font-size: 0.75em; font-weight: bold; border-radius: 6px; border: none;
             background-color: #1976d2; color: white; cursor: pointer; transition: background-color 0.3s;
             display: flex; align-items: center; justify-content: center; gap: 5px;
             flex-shrink: 0;
@@ -88,8 +87,8 @@
 
         /* --- BAGIAN GENERATOR AI --- */
         .ai-generator-section {
-            padding-bottom: 20px;
-            margin-bottom: 20px;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
             border-bottom: 1px dashed #aaa;
         }
         .ai-generator-section p {
@@ -110,23 +109,8 @@
         .ai-prompt-group .btn-update {
             flex-shrink: 0;
             width: auto;
-            font-size: 0.9em;
-            padding: 10px 15px;
-        }
-        #image-preview-container {
-            margin-top: 10px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100px;
-            background-color: #e0e0e0;
-            border-radius: 6px;
-        }
-        #image-preview {
-            max-width: 100%;
-            max-height: 150px;
-            border-radius: 4px;
-            display: none;
+            font-size: 0.8em;
+            padding: 8px 12px;
         }
         
         .notification { padding: 12px; margin-bottom: 15px; border-radius: 5px; text-align: center; font-weight: bold; display: none; border: 1px solid transparent; opacity: 0; transition: opacity 0.5s; }
@@ -136,11 +120,11 @@
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 5px; font-weight: bold; color: #2e7d32; }
         .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-        .form-group textarea { height: 120px; resize: vertical; }
-        .btn-update { display: flex; justify-content: center; align-items: center; gap: 10px; width: 100%; padding: 12px; background-image: linear-gradient(to right, #28a745 0%, #218838 51%, #28a745 100%); background-size: 200% auto; color: white; border: none; border-radius: 5px; font-size: 1.1em; font-weight: bold; cursor: pointer; transition: 0.5s; }
+        .form-group textarea { height: 100px; resize: vertical; }
+        .btn-update { display: flex; justify-content: center; align-items: center; gap: 10px; width: 100%; padding: 10px; background-image: linear-gradient(to right, #28a745 0%, #218838 51%, #28a745 100%); background-size: 200% auto; color: white; border: none; border-radius: 5px; font-size: 1em; font-weight: bold; cursor: pointer; transition: 0.5s; }
         .btn-update:hover { background-position: right center; }
         .btn-update:disabled { cursor: not-allowed; opacity: 0.7; }
-        .spinner { width: 20px; height: 20px; border: 3px solid rgba(255, 255, 255, 0.3); border-radius: 50%; border-top-color: #fff; animation: spin 1s ease-in-out infinite; display: none; }
+        .spinner { width: 18px; height: 18px; border: 3px solid rgba(255, 255, 255, 0.3); border-radius: 50%; border-top-color: #fff; animation: spin 1s ease-in-out infinite; display: none; }
         .btn-update.loading .spinner, .btn-apply.loading .spinner { display: block; }
         .btn-update.loading .btn-text, .btn-apply.loading .btn-text { display: none; }
         @keyframes spin { to { transform: rotate(360deg); } }
@@ -201,14 +185,14 @@
         
         @media (max-width: 650px) { 
             body { padding: 0; padding-bottom: 85px; }
-            .admin-controls { margin: 0; border-radius: 0; border-left: none; border-right: none; padding: 20px 10px; } 
+            .admin-controls { margin: 0; border-radius: 0; border-left: none; border-right: none; padding: 15px 10px; } 
             main { padding: 15px; }
             
             header { padding: 10px 15px; }
             header h1 { padding: 0 10px; }
 
             .teks-artikel { font-size: 1.1em; }
-            .foto-samping { float: none; width: 100%; margin-right: 0; }
+            .foto-samping { float: left; width: 30%; margin-right: 15px; }
             
             footer {
                 position: fixed;
@@ -347,15 +331,6 @@
                 </div>
                 <div class="form-group"><label>Judul Berita:</label><input type="text" id="modalJudul" value="${escapeHTML(article.title || '')}"></div>
                 <div class="form-group"><label>Isi Berita:</label><textarea id="modalIsi">${escapeHTML(article.content || '')}</textarea></div>
-                <hr style="border: 1px dashed #aaa; margin: 20px 0;">
-                <div class="ai-generator-section" style="border-top: none; padding-top: 0;">
-                     <p>🎨 Buat Gambar dari Berita di Atas</p>
-                     <button class="btn-update" onclick="generateImageFromArticle(this)">
-                        <span class="btn-text">Buat Gambar dengan AI</span>
-                        <div class="spinner"></div>
-                    </button>
-                    <div id="image-preview-container"><img id="image-preview" src="" alt="Image Preview"></div>
-                </div>
                 <div class="form-group"><label>Link/URL Foto:</label><input type="url" id="modalFotoLink" value="${escapeHTML(article.imageUrl || '')}"></div>
                 <button class="btn-update" onclick="updateArticle(event)"><span class="btn-text">${buttonText}</span><div class="spinner"></div></button>
             `;
@@ -363,16 +338,13 @@
 
         function populateSettingsForm() {
             const createSettingRow = (key, label, inputType = 'text', isTextarea = false) => {
-                const settings = fullData.settings || { current: {}, history: {} };
+                const settings = fullData.settings || { current: {} };
                 const currentValue = settings.current[key] || '';
-                const historyItems = settings.history[key] || [];
                 
                 let inputElement = isTextarea 
                     ? `<textarea id="modal${key}" rows="5" style="width:100%">${escapeHTML(currentValue)}</textarea>`
                     : `<input type="${inputType}" id="modal${key}" value="${escapeHTML(currentValue)}">`;
-                let historyDropdown = `<select onchange="document.getElementById('modal${key}').value = this.value;"><option value="">Riwayat</option>${historyItems.map(item => `<option value="${escapeHTML(item)}">${escapeHTML(shortenText(item, key === 'AI_System_Prompt' || key === 'AI_Image_Prompt' ? 40 : 25))}</option>`).join('')}</select>`;
-                let inputHtml = `<div class="input-with-history">${inputElement}${historyDropdown}</div>`;
-                return `<div class="setting-row"><div class="setting-input-group"><label for="modal${key}">${label}:</label>${inputHtml}</div><button class="btn-apply" onclick="updateSingleSetting('${key}', this)"><span class="btn-text">Terapkan</span><div class="spinner" style="width:14px; height:14px; border-width:2px;"></div></button></div>`;
+                return `<div class="setting-row"><div class="setting-input-group"><label for="modal${key}">${label}:</label>${inputElement}</div><button class="btn-apply" onclick="updateSingleSetting('${key}', this)"><span class="btn-text">Terapkan</span><div class="spinner" style="width:14px; height:14px; border-width:2px;"></div></button></div>`;
             };
             modalBody.innerHTML = `<div id="settingsNotification" class="notification"></div>
                 ${createSettingRow('Nama_Majalah', 'Nama Majalah')}
@@ -383,15 +355,9 @@
                 ${createSettingRow('No_HP', 'Nomor HP')}
                 ${createSettingRow('Alamat', 'Alamat Sekretariat')}
                 ${createSettingRow('AI_System_Prompt', 'Prompt Teks AI', 'text', true)}
-                ${createSettingRow('AI_Image_Prompt', 'Template Prompt Gambar AI', 'text', true)}
             `;
         }
         
-        function shortenText(text, maxLength = 25) {
-            if (typeof text !== 'string' || text.length <= maxLength) return text;
-            return text.replace(/\n/g, ' ').substring(0, maxLength) + '...';
-        }
-
         function displayContent(data) {
             const article = data.article || {}; 
             const settings = data.settings.current || {};
@@ -436,7 +402,7 @@
                 console.error("Gagal mengambil data:", error);
                 let userMessage = "Tidak dapat memuat konten dari Google Sheet.";
                 if (error.message && error.message.toLowerCase().includes("cannot read properties of null")) {
-                    userMessage = "Error Konfigurasi Kritis: Gagal membaca salah satu sheet. Pastikan Anda memiliki dua sheet dengan nama persis 'Konten' dan 'Settings_History' (perhatikan huruf besar/kecil).";
+                    userMessage = "Error Konfigurasi Kritis: Gagal membaca salah satu sheet. Pastikan Anda memiliki dua sheet dengan nama persis 'Konten' dan 'Pengaturan' (perhatikan huruf besar/kecil).";
                 } else if (error.message) { userMessage = `Gagal memuat: ${error.message}`; }
                 skeleton.style.display = 'none'; document.getElementById('error-message').innerText = userMessage; errorContainer.style.display = 'block';
             }
@@ -505,15 +471,13 @@
                 let generatedText = candidate?.content?.parts?.[0]?.text;
                 if (!generatedText) throw new Error("Respon dari AI kosong atau tidak valid.");
                 
-                let title = '', content = '', imagePrompt = '';
+                let title = '', content = '';
                 const titleMatch = generatedText.match(/\[JUDUL\]\s*([\s\S]*?)\s*\[ISI\]/);
-                const contentMatch = generatedText.match(/\[ISI\]\s*([\s\S]*?)\s*\[PROMPT_GAMBAR\]/);
-                const imagePromptMatch = generatedText.match(/\[PROMPT_GAMBAR\]\s*([\s\S]*)/);
+                const contentMatch = generatedText.match(/\[ISI\]\s*([\s\S]*)/);
 
-                if (titleMatch && contentMatch && imagePromptMatch) {
+                if (titleMatch && contentMatch) {
                     title = titleMatch[1].trim();
                     content = contentMatch[1].trim();
-                    imagePrompt = imagePromptMatch[1].trim();
                 } else {
                     const lines = generatedText.split('\n').filter(line => line.trim() !== '');
                     if (lines.length > 1) {
@@ -523,8 +487,7 @@
                 }
                 document.getElementById('modalJudul').value = title;
                 document.getElementById('modalIsi').value = content;
-                document.getElementById('aiImagePrompt').value = imagePrompt;
-                showNotification("Konten berhasil dibuat oleh AI!", 'success', 'article');
+                showNotification("Konten berhasil dibuat oleh AI! Silakan tinjau.", 'success', 'article');
             } catch (error) {
                 console.error("Error generating content with AI:", error);
                 showNotification("Gagal membuat konten dengan AI. Coba lagi.", 'error', 'article');
@@ -535,51 +498,7 @@
         };
 
         window.generateImageFromArticle = async function(button) {
-            const imagePrompt = document.getElementById('aiImagePrompt').value.trim();
-            if (!imagePrompt) {
-                showNotification("Harap buat teks berita terlebih dahulu untuk mendapatkan saran prompt gambar.", 'error', 'article');
-                return;
-            }
-            button.classList.add('loading');
-            button.disabled = true;
-
-            const defaultImagePromptTemplate = "fotorealistik, [DESKRIPSI_GAMBAR]";
-            let imageSystemPrompt = fullData.settings?.current?.AI_Image_Prompt || defaultImagePromptTemplate;
-            
-            const finalImagePrompt = imageSystemPrompt.replace('[DESKRIPSI_GAMBAR]', imagePrompt.substring(0, 500));
-            
-            const apiKey = "AIzaSyD0lUbFs0Nv0e62l-d5TK5uJsw7IbbrzLk";
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${apiKey}`;
-            const payload = { instances: [{ prompt: finalImagePrompt }], parameters: { "sampleCount": 1 } };
-            
-            try {
-                const response = await fetch(apiUrl, {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
-                });
-                if (!response.ok) throw new Error(`API request failed with status ${response.status}`);
-                const result = await response.json();
-                const base64Data = result.predictions?.[0]?.bytesBase64Encoded;
-                if (!base64Data) throw new Error("Respon gambar dari AI kosong atau tidak valid.");
-
-                const imageUrl = `data:image/png;base64,${base64Data}`;
-                document.getElementById('modalFotoLink').value = imageUrl;
-                
-                const previewImg = document.getElementById('image-preview');
-                previewImg.src = imageUrl;
-                previewImg.style.display = 'block';
-
-                showNotification("Gambar berhasil dibuat oleh AI!", 'success', 'article');
-            } catch (error) {
-                console.error("Error generating image with AI:", error);
-                let errorMessage = "Gagal membuat gambar dengan AI. Coba lagi.";
-                if (error.message.includes("400")) {
-                    errorMessage = "Gagal membuat gambar: Deskripsi terlalu panjang atau tidak valid. Coba perpendek saran prompt gambar.";
-                }
-                showNotification(errorMessage, 'error', 'article');
-            } finally {
-                button.classList.remove('loading');
-                button.disabled = false;
-            }
+            showNotification("Fitur ini sedang dinonaktifkan.", 'error', 'article');
         };
 
         function updateDOMForKey(key, value) {
@@ -607,8 +526,6 @@
             sendData(payload, button, 'settings', () => {
                 showNotification("Pengaturan diterapkan!", 'success', 'settings');
                 fullData.settings.current[key] = value;
-                if (!fullData.settings.history[key]) fullData.settings.history[key] = [];
-                if (fullData.settings.history[key].indexOf(value) === -1) fullData.settings.history[key].push(value);
                 updateDOMForKey(key, value);
             });
         };
