@@ -197,7 +197,19 @@
             .footer-content { font-size: 0.75em; }
 
             .teks-artikel { font-size: 1.1em; }
-            .foto-samping { float: none; width: 100%; margin-right: 0; }
+            
+            .foto-samping[data-count="1"] {
+                float: left;
+                width: 45%;
+                margin-right: 15px;
+            }
+            .foto-samping[data-count="2"],
+            .foto-samping[data-count="3"],
+            .foto-samping[data-count="4"] {
+                float: none;
+                width: 100%;
+                margin-right: 0;
+            }
             
             footer { position: fixed; bottom: 0; left: 0; width: 100%; z-index: 999; box-shadow: 0 -3px 10px rgba(0,0,0,0.15); box-sizing: border-box; }
             .read-more-mobile { display: block; position: fixed; bottom: 85px; left: 0; width: 100%; padding: 30px 0 10px 0; background: linear-gradient(to bottom, transparent, #f8f9fa 50%); text-align: center; color: var(--warna-utama); font-weight: bold; font-style: italic; z-index: 998; pointer-events: none; }
