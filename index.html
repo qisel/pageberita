@@ -3,129 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- Meta Tags untuk SEO & Judul Tab Browser -->
     <title>Majalah Digital Interaktif</title>
     <meta name="description" content="Baca berita dan informasi terkini yang disajikan secara dinamis.">
-
-    <!-- Open Graph Meta Tags untuk Pratinjau di Media Sosial -->
     <meta property="og:title" content="Majalah Digital Interaktif" />
     <meta property="og:description" content="Baca berita dan informasi terkini yang disajikan secara dinamis." />
     <meta property="og:image" content="https://via.placeholder.com/1200x630.png?text=Majalah+Digital" />
     <meta property="og:url" content="" />
     <meta property="og:type" content="article" />
     <meta property="twitter:card" content="summary_large_image" />
-
     <style>
-        /* --- FONT & DASAR --- */
-        :root {
-            --warna-utama: #1b5e20;
-            --warna-aksen: #ffc107;
-        }
+        :root { --warna-utama: #1b5e20; --warna-aksen: #ffc107; }
         body { font-family: 'Georgia', 'Times New Roman', Times, serif; margin: 0; padding: 0; background-color: #f8f9fa; color: #333; }
-
-        /* --- Tombol Admin (Transparan & Lebih Kecil) --- */
-        .admin-controls {
-            max-width: 800px;
-            margin: 20px auto;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            justify-content: center;
-            padding: 10px;
-            border-radius: 12px;
-            background: rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-        .admin-btn {
-            padding: 6px 14px;
-            font-size: 0.8em;
-            font-weight: bold;
-            border-radius: 8px;
-            border: none;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        #btn-new-article { background-color: var(--warna-utama); color: white; }
-        #btn-edit-last-article { background-color: #546e7a; color: white; }
-        #btn-edit-pengaturan { background-color: #e65100; color: white; }
-        #btn-share { background-color: #007bff; color: white; }
+        .admin-controls { max-width: 800px; margin: 20px auto; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; padding: 10px; border-radius: 12px; background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .admin-btn { padding: 6px 14px; font-size: 0.8em; font-weight: bold; border-radius: 8px; border: none; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        #btn-new-article, #btn-edit-last-article, #btn-edit-pengaturan, #btn-share { color: white; }
+        #btn-new-article { background-color: var(--warna-utama); }
+        #btn-edit-last-article { background-color: #546e7a; }
+        #btn-edit-pengaturan { background-color: #e65100; }
+        #btn-share { background-color: #007bff; }
         .admin-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
-        
-        /* --- MODAL (POP-UP) (Transparan & Lebih Kecil) --- */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: none; justify-content: center; align-items: center;
-            z-index: 1000; backdrop-filter: blur(2px);
-        }
-        .modal-content {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            padding: 20px; border-radius: 12px; width: 90%; 
-            max-width: 450px;
-            max-height: 90vh; overflow-y: auto; box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-            position: relative;
-        }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); display: none; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(2px); }
+        .modal-content { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.3); padding: 20px; border-radius: 12px; width: 90%; max-width: 450px; max-height: 90vh; overflow-y: auto; box-shadow: 0 5px 20px rgba(0,0,0,0.2); position: relative; }
         .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ddd; padding-bottom: 10px; margin-bottom: 15px; }
         .modal-header h2 { margin: 0; color: var(--warna-utama); font-size: 1.2em; }
         .modal-close-btn { font-size: 1.8em; font-weight: bold; cursor: pointer; color: #aaa; line-height: 1; }
         .modal-close-btn:hover { color: #333; }
-
-        /* --- FORMULIR DENGAN TOMBOL "TERAPKAN" PER INPUT --- */
-        .setting-row {
-            display: flex;
-            flex-wrap: nowrap;
-            align-items: flex-end;
-            gap: 8px;
-            padding-bottom: 12px;
-            margin-bottom: 12px;
-            border-bottom: 1px solid #e0e0e0;
-        }
+        .setting-row { display: flex; flex-wrap: nowrap; align-items: flex-end; gap: 8px; padding-bottom: 12px; margin-bottom: 12px; border-bottom: 1px solid #e0e0e0; }
         .setting-input-group { flex-grow: 1; min-width: 0; }
         .setting-input-group label { display: block; margin-bottom: 5px; font-weight: bold; color: #2e7d32; font-size: 0.8em; }
         .input-with-history input, .input-with-history textarea { font-size: 0.9em; padding: 8px; }
-        .btn-apply {
-            padding: 7px 10px; font-size: 0.75em; font-weight: bold; border-radius: 6px; border: none;
-            background-color: #1976d2; color: white; cursor: pointer; transition: background-color 0.3s;
-            display: flex; align-items: center; justify-content: center; gap: 5px;
-            flex-shrink: 0;
-            margin-bottom: 2px;
-        }
+        .btn-apply { padding: 7px 10px; font-size: 0.75em; font-weight: bold; border-radius: 6px; border: none; background-color: #1976d2; color: white; cursor: pointer; transition: background-color 0.3s; display: flex; align-items: center; justify-content: center; gap: 5px; flex-shrink: 0; margin-bottom: 2px; }
         .btn-apply:hover { background-color: #1565c0; }
-
-        /* --- BAGIAN GENERATOR AI --- */
-        .ai-generator-section {
-            padding-bottom: 15px;
-            margin-bottom: 15px;
-            border-bottom: 1px dashed #aaa;
-        }
-        .ai-generator-section p {
-            font-weight: bold;
-            color: #333;
-            margin-top: 0;
-            text-align: center;
-        }
-        .ai-prompt-group {
-            display: flex;
-            gap: 8px;
-            align-items: flex-end;
-        }
-        .ai-prompt-group .form-group {
-            flex-grow: 1;
-            margin-bottom: 0;
-        }
-        .ai-prompt-group .btn-update {
-            flex-shrink: 0;
-            width: auto;
-            font-size: 0.8em;
-            padding: 8px 12px;
-        }
-        
+        .ai-generator-section { padding-bottom: 15px; margin-bottom: 15px; border-bottom: 1px dashed #aaa; }
+        .ai-generator-section p { font-weight: bold; color: #333; margin-top: 0; text-align: center; }
+        .ai-prompt-group { display: flex; gap: 8px; align-items: flex-end; }
+        .ai-prompt-group .form-group { flex-grow: 1; margin-bottom: 0; }
+        .ai-prompt-group .btn-update { flex-shrink: 0; width: auto; font-size: 0.8em; padding: 8px 12px; }
         .notification { padding: 12px; margin-bottom: 15px; border-radius: 5px; text-align: center; font-weight: bold; display: none; border: 1px solid transparent; opacity: 0; transition: opacity 0.5s; }
         .notification.show { display: block; opacity: 1; }
         .notification.error { background-color: #f8d7da; color: #721c24; border-color: #f5c6cb; }
@@ -141,44 +54,16 @@
         .btn-update.loading .spinner, .btn-apply.loading .spinner { display: block; }
         .btn-update.loading .btn-text, .btn-apply.loading .btn-text { display: none; }
         @keyframes spin { to { transform: rotate(360deg); } }
-        
         .container-majalah { background-color: #ffffff; transition: opacity 0.5s ease-in; }
-        
-        header { 
-            max-width: 800px;
-            margin: 0 auto;
-            box-sizing: border-box;
-            display: flex; 
-            align-items: center;
-            padding: 15px 25px; 
-            border-bottom: 4px solid var(--warna-aksen); 
-        }
+        header, main, .footer-content-inner { max-width: 800px; margin: 0 auto; box-sizing: border-box; }
+        header { display: flex; align-items: center; padding: 15px 25px; border-bottom: 4px solid var(--warna-aksen); }
         header .logo { flex-shrink: 0; }
         header .logo img { height: 60px; width: auto; }
         header .logo a { display: inline-block; transition: transform 0.2s ease-in-out; }
         header .logo a:hover { transform: scale(1.05); }
-        
-        header h1 { 
-            font-size: clamp(1.5em, 4vw, 2.2em); 
-            color: var(--warna-utama); 
-            text-align: center; 
-            margin: 0; 
-            padding: 0 15px;
-            flex-grow: 1;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            min-width: 0;
-        }
-
-        main, .footer-content {
-            max-width: 800px;
-            margin: 0 auto;
-            box-sizing: border-box;
-        }
+        header h1 { font-size: clamp(1.5em, 4vw, 2.2em); color: var(--warna-utama); text-align: center; margin: 0; padding: 0 15px; flex-grow: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
         main { padding: 25px; }
         article .judul-artikel { font-size: clamp(1.8em, 5vw, 2.2em); margin-top: 0; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px; color: #388e3c; }
-        
         .artikel-container::after { content: ""; clear: both; display: table; }
         .foto-samping { float: left; width: 45%; max-width: 320px; margin-right: 20px; margin-bottom: 15px; }
         .foto-samping-inner { display: flex; flex-wrap: wrap; }
@@ -188,31 +73,35 @@
         .foto-samping[data-count="2"] a { width: 50%; }
         .foto-samping[data-count="3"] a, .foto-samping[data-count="4"] a { width: 50%; }
         .teks-artikel { text-align: justify; line-height: 1.6; font-size: 1em; }
-        
-        footer { background-color: var(--warna-utama); color: #ffffff; padding: 20px 0; text-align: center; }
-        .footer-content { display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; gap: 15px; font-size: 0.9em; padding: 0 15px; }
+        footer { background-color: var(--warna-utama); color: #ffffff; padding: 15px 0; text-align: center; }
+        .footer-content { display: flex; flex-direction: column; gap: 15px; }
+        .footer-content-inner { display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; gap: 15px; font-size: 0.9em; padding: 0 15px; }
         #footerMedsos a { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; color: white; transition: opacity 0.3s; }
         #footerMedsos a:hover { opacity: 0.8; }
-        
+        .news-ticker-wrap { width: 100%; background-color: rgba(0,0,0,0.2); padding: 8px 0; overflow: hidden; white-space: nowrap; }
+        .news-ticker { display: inline-block; animation: ticker-scroll 30s linear infinite; }
+        .news-ticker-item { display: inline-block; margin: 0 20px; color: #fff; text-decoration: none; font-style: italic; }
+        .news-ticker-item:hover { text-decoration: underline; }
+        @keyframes ticker-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
         .skeleton { animation: skeleton-pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
         @keyframes skeleton-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
         .skeleton-text { height: 1em; background-color: #e0e0e0; border-radius: 4px; }
         .skeleton-img { background-color: #e0e0e0; }
         .read-more-mobile { display: none; }
-        
         @media (max-width: 650px) { 
-            body { padding: 0; padding-bottom: 85px; }
+            body { padding: 0; padding-bottom: 120px; }
             .admin-controls { margin: 0; border-radius: 0; border-left: none; border-right: none; padding: 15px 10px; } 
             main { padding: 15px; }
             header { padding: 10px 15px; }
             header h1 { padding: 0 10px; font-size: clamp(1.8em, 7vw, 2.8em); }
             article .judul-artikel { font-size: 1.4em; }
-            .footer-content { font-size: 0.75em; }
+            .footer-content { gap: 10px; padding-bottom: 0; }
+            .footer-content-inner { font-size: 0.75em; }
             .teks-artikel { font-size: 1.1em; }
             .foto-samping[data-count="1"] { float: left; width: 45%; margin-right: 15px; }
             .foto-samping[data-count="2"], .foto-samping[data-count="3"], .foto-samping[data-count="4"] { float: none; width: 100%; margin-right: 0; }
             footer { position: fixed; bottom: 0; left: 0; width: 100%; z-index: 999; box-shadow: 0 -3px 10px rgba(0,0,0,0.15); box-sizing: border-box; }
-            .read-more-mobile { display: block; position: fixed; bottom: 85px; left: 0; width: 100%; padding: 30px 0 10px 0; background: linear-gradient(to bottom, transparent, #f8f9fa 50%); text-align: center; color: var(--warna-utama); font-weight: bold; font-style: italic; z-index: 998; pointer-events: none; }
+            .read-more-mobile { display: block; position: fixed; bottom: 120px; left: 0; width: 100%; padding: 30px 0 10px 0; background: linear-gradient(to bottom, transparent, #f8f9fa 50%); text-align: center; color: var(--warna-utama); font-weight: bold; font-style: italic; z-index: 998; pointer-events: none; }
         }
     </style>
 </head>
@@ -238,10 +127,10 @@
     <div id="shareModal" class="modal-overlay">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Bagikan Link</h2>
+                <h2>Bagikan Link Permanen</h2>
                 <span id="shareModalClose" class="modal-close-btn">&times;</span>
             </div>
-            <p>Salin dan bagikan link di bawah ini. Link ini tidak akan menampilkan panel admin.</p>
+            <p>Salin dan bagikan link di bawah ini. Link ini akan selalu menampilkan berita yang sedang Anda lihat.</p>
             <div class="form-group">
                 <input type="text" id="share-link-input" readonly style="background-color: #eee;">
             </div>
@@ -268,15 +157,20 @@
             <div class="read-more-mobile">...baca selengkapnya</div>
             <footer>
                 <div class="footer-content">
-                    <div id="footerMedsos"></div>
-                    <div id="footerKontak"></div>
-                    <div id="footerAlamat"></div>
+                    <div class="news-ticker-wrap">
+                        <div class="news-ticker" id="news-ticker"></div>
+                    </div>
+                    <div class="footer-content-inner">
+                        <div id="footerMedsos"></div>
+                        <div id="footerKontak"></div>
+                        <div id="footerAlamat"></div>
+                    </div>
                 </div>
             </footer>
         </div>
     </div>
 
-    <div id="skeleton-loader"><div class="container-majalah"><header class="skeleton"><div style="height: 90px;"></div></header><main><div class="judul-artikel skeleton skeleton-text" style="height: 2.2em; width: 80%; margin-bottom: 20px;"></div><div class="artikel-container"><div class="foto-samping skeleton skeleton-img" style="height: 250px;"></div><div class="teks-artikel"><p class="skeleton skeleton-text"></p><p class="skeleton skeleton-text"></p><p class="skeleton skeleton-text"></p></div></div></main><footer class="skeleton"><div style="height: 65px;"></div></footer></div></div>
+    <div id="skeleton-loader"><div class="container-majalah"><header class="skeleton"><div style="height: 90px;"></div></header><main><div class="judul-artikel skeleton skeleton-text" style="height: 2.2em; width: 80%; margin-bottom: 20px;"></div><div class="artikel-container"><div class="foto-samping skeleton skeleton-img" style="height: 250px;"></div><div class="teks-artikel"><p class="skeleton skeleton-text"></p><p class="skeleton skeleton-text"></p><p class="skeleton skeleton-text"></p></div></div></main><footer class="skeleton"><div style="height: 100px;"></div></footer></div></div>
     <div id="error-container" style="display: none; max-width: 800px; margin: 20px auto; padding: 20px; background-color: #f8d7da; border: 1px solid #f5c6cb; border-radius: 8px; color: #721c24;"><h2>Masalah Kritis</h2><p id="error-message"></p><p>Periksa kembali panduan penyiapan Google Sheets Anda.</p></div>
 
     <script>
@@ -292,8 +186,13 @@
         function openModal(type) {
             if (type === 'share') {
                 const shareLinkInput = document.getElementById('share-link-input');
-                shareLinkInput.value = window.location.origin + window.location.pathname + '?view=public';
-                shareModal.style.display = 'flex';
+                const articleId = fullData.article?.id;
+                if (articleId) {
+                    shareLinkInput.value = `${window.location.origin}${window.location.pathname}?berita=${articleId}&view=public`;
+                    shareModal.style.display = 'flex';
+                } else {
+                    alert("Tidak ada berita untuk dibagikan.");
+                }
             } else {
                 if (type === 'new-article' || type === 'edit-article') {
                     isEditingArticle = type === 'edit-article';
@@ -407,11 +306,18 @@
         function displayContent(data) {
             const article = data.article || {}; 
             const settings = data.settings.current || {};
+            const recentArticles = data.recentArticles || [];
             const formatUrl = (url) => {
                 if (!url || typeof url !== 'string' || url.trim() === '') return '#';
                 if (url.startsWith('http://') || url.startsWith('https://')) return url;
                 return `https://${url}`;
             };
+            document.title = article.title || settings.Nama_Majalah || "Majalah Digital";
+            document.querySelector('meta[name="description"]').setAttribute("content", (article.content || "Baca berita terkini").substring(0, 155));
+            document.querySelector('meta[property="og:title"]').setAttribute("content", article.title || settings.Nama_Majalah || "Majalah Digital");
+            document.querySelector('meta[property="og:description"]').setAttribute("content", (article.content || "Baca berita terkini").substring(0, 155));
+            document.querySelector('meta[property="og:image"]').setAttribute("content", article.imageUrls?.[0] || 'https://via.placeholder.com/1200x630.png?text=Majalah+Digital');
+            
             document.getElementById('artikelJudul').innerText = article.title || "Belum Ada Berita";
             const teksContainer = document.getElementById('artikelTeks');
             teksContainer.innerHTML = '';
@@ -461,6 +367,17 @@
             medsosDiv.innerHTML = `<a id="medsosLink" href="${formatUrl(settings.Link_Facebook)}" target="_blank" rel="noopener noreferrer"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16"><path d="M16 8.049c0-4.446-3.582-8.05-8-8.05C3.58 0-.002 3.603-.002 8.05c0 4.017 2.926 7.347 6.75 7.951v-5.625h-2.03V8.05H6.75V6.275c0-2.017 1.195-3.131 3.022-3.131.876 0 1.791.157 1.791.157v1.98h-1.009c-.993 0-1.303.621-1.303 1.258v1.51h2.218l-.354 2.326H9.25V16c3.824-.604 6.75-3.934 6.75-7.951z"/></svg><span>${settings.Medsos || 'Facebook'}</span></a>`;
             document.getElementById('footerKontak').innerHTML = `<strong>Nomor HP:</strong> ${settings.No_HP || 'N/A'}`;
             document.getElementById('footerAlamat').innerHTML = `<strong>Sekretariat:</strong> ${settings.Alamat || 'N/A'}`;
+            
+            const newsTicker = document.getElementById('news-ticker');
+            newsTicker.innerHTML = '';
+            if (recentArticles.length > 0) {
+                let tickerContent = '';
+                recentArticles.forEach(item => {
+                    tickerContent += `<a href="?berita=${item.id}" class="news-ticker-item">${escapeHTML(item.title)}</a> ★ `;
+                });
+                newsTicker.innerHTML = tickerContent.repeat(3); // Ulangi konten agar marquee mulus
+            }
+            
             setupClickTrackers();
         }
         
@@ -468,9 +385,13 @@
             const skeleton = document.getElementById('skeleton-loader');
             const mainContent = document.getElementById('majalah-wrapper');
             const errorContainer = document.getElementById('error-container');
+            const params = new URLSearchParams(window.location.search);
+            const beritaId = params.get('berita');
+            
             skeleton.style.display = 'block'; mainContent.style.display = 'none'; errorContainer.style.display = 'none';
             try {
-                const response = await fetch(GOOGLE_SHEET_WEB_APP_URL);
+                const fetchUrl = GOOGLE_SHEET_WEB_APP_URL + (beritaId ? '?berita=' + beritaId : '');
+                const response = await fetch(fetchUrl);
                 if (!response.ok) throw new Error(`Network response error: ${response.statusText}`);
                 const result = await response.json();
                 if (result.success) {
@@ -482,8 +403,8 @@
             } catch (error) {
                 console.error("Gagal mengambil data:", error);
                 let userMessage = "Tidak dapat memuat konten dari Google Sheet.";
-                if (error.message && error.message.toLowerCase().includes("cannot read properties of null")) {
-                    userMessage = "Error Konfigurasi Kritis: Gagal membaca salah satu sheet. Pastikan Anda memiliki dua sheet dengan nama persis 'Konten' dan 'Pengaturan' (perhatikan huruf besar/kecil).";
+                if (error.message && error.message.toLowerCase().includes("tidak ditemukan")) {
+                    userMessage = `Error Konfigurasi Kritis: ${error.message}. Pastikan nama sheet Anda sudah benar.`;
                 } else if (error.message) { userMessage = `Gagal memuat: ${error.message}`; }
                 skeleton.style.display = 'none'; document.getElementById('error-message').innerText = userMessage; errorContainer.style.display = 'block';
             }
@@ -503,15 +424,12 @@
                         successCallback();
                     } else {
                         showNotification(result.message || "Data berhasil disimpan!", 'success', panel);
-                        setTimeout(() => { closeModal(); loadAllContent(); }, 1500);
+                        setTimeout(() => { closeModal(); window.location.search = ''; }, 1500);
                     }
                 } else { throw new Error(result.message || "Terjadi kesalahan pada skrip."); }
             } catch (error) {
                 console.error("Error menyimpan dokumen:", error);
                 let userMessage = `Gagal menyimpan: ${error.message}`;
-                if (error.message && error.message.toLowerCase().includes("cannot read properties of null")) {
-                     userMessage = "Error Konfigurasi Kritis: Gagal menyimpan karena nama sheet salah.";
-                }
                 showNotification(userMessage, 'error', panel);
             } finally {
                 button.classList.remove('loading');
