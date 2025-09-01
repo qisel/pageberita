@@ -40,9 +40,10 @@
         #btn-new-article { background-color: var(--warna-utama); color: white; }
         #btn-edit-last-article { background-color: #546e7a; color: white; }
         #btn-edit-pengaturan { background-color: #e65100; color: white; }
+        #btn-share { background-color: #007bff; color: white; } /* Tombol baru */
         .admin-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
         
-        /* --- MODAL (POP-UP) (Transparan & Lebih Kecil) --- */
+        /* --- MODAL (POP-UP) --- */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-color: rgba(0, 0, 0, 0.5);
@@ -86,32 +87,11 @@
         .btn-apply:hover { background-color: #1565c0; }
 
         /* --- BAGIAN GENERATOR AI --- */
-        .ai-generator-section {
-            padding-bottom: 15px;
-            margin-bottom: 15px;
-            border-bottom: 1px dashed #aaa;
-        }
-        .ai-generator-section p {
-            font-weight: bold;
-            color: #333;
-            margin-top: 0;
-            text-align: center;
-        }
-        .ai-prompt-group {
-            display: flex;
-            gap: 8px;
-            align-items: flex-end;
-        }
-        .ai-prompt-group .form-group {
-            flex-grow: 1;
-            margin-bottom: 0;
-        }
-        .ai-prompt-group .btn-update {
-            flex-shrink: 0;
-            width: auto;
-            font-size: 0.8em;
-            padding: 8px 12px;
-        }
+        .ai-generator-section { padding-bottom: 15px; margin-bottom: 15px; border-bottom: 1px dashed #aaa; }
+        .ai-generator-section p { font-weight: bold; color: #333; margin-top: 0; text-align: center; }
+        .ai-prompt-group { display: flex; gap: 8px; align-items: flex-end; }
+        .ai-prompt-group .form-group { flex-grow: 1; margin-bottom: 0; }
+        .ai-prompt-group .btn-update { flex-shrink: 0; width: auto; font-size: 0.8em; padding: 8px 12px; }
         
         .notification { padding: 12px; margin-bottom: 15px; border-radius: 5px; text-align: center; font-weight: bold; display: none; border: 1px solid transparent; opacity: 0; transition: opacity 0.5s; }
         .notification.show { display: block; opacity: 1; }
@@ -130,42 +110,15 @@
         @keyframes spin { to { transform: rotate(360deg); } }
         
         .container-majalah { background-color: #ffffff; transition: opacity 0.5s ease-in; }
-        
-        header { 
-            max-width: 800px;
-            margin: 0 auto;
-            box-sizing: border-box;
-            display: flex; 
-            align-items: center;
-            padding: 15px 25px; 
-            border-bottom: 4px solid var(--warna-aksen); 
-        }
+        header, main, .footer-content { max-width: 800px; margin: 0 auto; box-sizing: border-box; }
+        header { display: flex; align-items: center; padding: 15px 25px; border-bottom: 4px solid var(--warna-aksen); }
         header .logo { flex-shrink: 0; }
         header .logo img { height: 60px; width: auto; }
         header .logo a { display: inline-block; transition: transform 0.2s ease-in-out; }
         header .logo a:hover { transform: scale(1.05); }
-        
-        header h1 { 
-            font-size: clamp(1.5em, 4vw, 2.2em); 
-            color: var(--warna-utama); 
-            text-align: center; 
-            margin: 0; 
-            padding: 0 15px;
-            flex-grow: 1;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            min-width: 0;
-        }
-
-        main, .footer-content {
-            max-width: 800px;
-            margin: 0 auto;
-            box-sizing: border-box;
-        }
+        header h1 { font-size: clamp(1.5em, 4vw, 2.2em); color: var(--warna-utama); text-align: center; margin: 0; padding: 0 15px; flex-grow: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
         main { padding: 25px; }
         article .judul-artikel { font-size: clamp(1.8em, 5vw, 2.2em); margin-top: 0; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px; color: #388e3c; }
-        
         .artikel-container::after { content: ""; clear: both; display: table; }
         .foto-samping { float: left; width: 45%; max-width: 320px; margin-right: 20px; margin-bottom: 15px; }
         .foto-samping-inner { display: flex; flex-wrap: wrap; }
@@ -175,18 +128,15 @@
         .foto-samping[data-count="2"] a { width: 50%; }
         .foto-samping[data-count="3"] a, .foto-samping[data-count="4"] a { width: 50%; }
         .teks-artikel { text-align: justify; line-height: 1.6; font-size: 1em; }
-        
         footer { background-color: var(--warna-utama); color: #ffffff; padding: 20px 0; text-align: center; }
         .footer-content { display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; gap: 15px; font-size: 0.9em; padding: 0 15px; }
         #footerMedsos a { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; color: white; transition: opacity 0.3s; }
         #footerMedsos a:hover { opacity: 0.8; }
-        
         .skeleton { animation: skeleton-pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
         @keyframes skeleton-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
         .skeleton-text { height: 1em; background-color: #e0e0e0; border-radius: 4px; }
         .skeleton-img { background-color: #e0e0e0; }
         .read-more-mobile { display: none; }
-        
         @media (max-width: 650px) { 
             body { padding: 0; padding-bottom: 85px; }
             .admin-controls { margin: 0; border-radius: 0; border-left: none; border-right: none; padding: 15px 10px; } 
@@ -195,22 +145,9 @@
             header h1 { padding: 0 10px; font-size: clamp(1.8em, 7vw, 2.8em); }
             article .judul-artikel { font-size: 1.4em; }
             .footer-content { font-size: 0.75em; }
-
             .teks-artikel { font-size: 1.1em; }
-            
-            .foto-samping[data-count="1"] {
-                float: left;
-                width: 45%;
-                margin-right: 15px;
-            }
-            .foto-samping[data-count="2"],
-            .foto-samping[data-count="3"],
-            .foto-samping[data-count="4"] {
-                float: none;
-                width: 100%;
-                margin-right: 0;
-            }
-            
+            .foto-samping[data-count="1"] { float: left; width: 45%; margin-right: 15px; }
+            .foto-samping[data-count="2"], .foto-samping[data-count="3"], .foto-samping[data-count="4"] { float: none; width: 100%; margin-right: 0; }
             footer { position: fixed; bottom: 0; left: 0; width: 100%; z-index: 999; box-shadow: 0 -3px 10px rgba(0,0,0,0.15); box-sizing: border-box; }
             .read-more-mobile { display: block; position: fixed; bottom: 85px; left: 0; width: 100%; padding: 30px 0 10px 0; background: linear-gradient(to bottom, transparent, #f8f9fa 50%); text-align: center; color: var(--warna-utama); font-weight: bold; font-style: italic; z-index: 998; pointer-events: none; }
         }
@@ -218,10 +155,11 @@
 </head>
 <body>
 
-    <div class="admin-controls">
+    <div id="admin-panel" class="admin-controls">
         <button id="btn-new-article" class="admin-btn">Tulis Berita Baru</button>
         <button id="btn-edit-last-article" class="admin-btn">Edit Berita Terakhir</button>
         <button id="btn-edit-pengaturan" class="admin-btn">Edit Pengaturan</button>
+        <button id="btn-share" class="admin-btn">Bagikan</button>
     </div>
 
     <div id="adminModal" class="modal-overlay">
@@ -231,6 +169,20 @@
                 <span id="modalClose" class="modal-close-btn">&times;</span>
             </div>
             <div id="modalBody"></div>
+        </div>
+    </div>
+    
+    <div id="shareModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Bagikan Link</h2>
+                <span id="shareModalClose" class="modal-close-btn">&times;</span>
+            </div>
+            <p>Salin dan bagikan link di bawah ini. Link ini tidak akan menampilkan panel admin.</p>
+            <div class="form-group">
+                <input type="text" id="share-link-input" readonly style="background-color: #eee;">
+            </div>
+            <button class="btn-update" onclick="copyShareLink()">Salin Link</button>
         </div>
     </div>
 
@@ -272,22 +224,30 @@
         const modal = document.getElementById('adminModal');
         const modalTitle = document.getElementById('modalTitle');
         const modalBody = document.getElementById('modalBody');
+        const shareModal = document.getElementById('shareModal');
 
         function openModal(type) {
-            if (type === 'new-article' || type === 'edit-article') {
-                isEditingArticle = type === 'edit-article';
-                modalTitle.innerText = isEditingArticle ? 'Edit Berita Terakhir' : 'Tulis Berita Baru';
-                populateArticleForm();
-            } else if (type === 'settings') {
-                modalTitle.innerText = 'Edit Pengaturan Umum';
-                populateSettingsForm();
+            if (type === 'share') {
+                const shareLinkInput = document.getElementById('share-link-input');
+                shareLinkInput.value = window.location.origin + window.location.pathname + '?view=public';
+                shareModal.style.display = 'flex';
+            } else {
+                if (type === 'new-article' || type === 'edit-article') {
+                    isEditingArticle = type === 'edit-article';
+                    modalTitle.innerText = isEditingArticle ? 'Edit Berita Terakhir' : 'Tulis Berita Baru';
+                    populateArticleForm();
+                } else if (type === 'settings') {
+                    modalTitle.innerText = 'Edit Pengaturan Umum';
+                    populateSettingsForm();
+                }
+                modal.style.display = 'flex';
             }
-            modal.style.display = 'flex';
         }
 
         function closeModal() {
             modal.style.display = 'none';
             modalBody.innerHTML = '';
+            shareModal.style.display = 'none';
         }
 
         function showNotification(message, type = 'error', panel = 'article') {
@@ -303,8 +263,11 @@
         document.getElementById('btn-new-article').addEventListener('click', () => openModal('new-article'));
         document.getElementById('btn-edit-last-article').addEventListener('click', () => openModal('edit-article'));
         document.getElementById('btn-edit-pengaturan').addEventListener('click', () => openModal('settings'));
+        document.getElementById('btn-share').addEventListener('click', () => openModal('share'));
         document.getElementById('modalClose').addEventListener('click', closeModal);
+        document.getElementById('shareModalClose').addEventListener('click', closeModal);
         modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+        shareModal.addEventListener('click', (e) => { if (e.target === shareModal) closeModal(); });
         
         function populateArticleForm() {
             const article = isEditingArticle ? (fullData.article || { imageUrls: [''] }) : { imageUrls: [''] };
@@ -623,8 +586,26 @@
                 medsosLink.addEventListener('click', (e) => trackAndNavigate('facebook', e));
             }
         }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('view') === 'public') {
+                document.getElementById('admin-panel').style.display = 'none';
+            }
+            loadAllContent();
+        });
 
-        document.addEventListener('DOMContentLoaded', loadAllContent);
+        window.copyShareLink = function() {
+            const input = document.getElementById('share-link-input');
+            input.select();
+            input.setSelectionRange(0, 99999); // For mobile devices
+            try {
+                document.execCommand('copy');
+                alert('Link berhasil disalin!');
+            } catch (err) {
+                alert('Gagal menyalin link.');
+            }
+        }
     </script>
 </body>
 </html>
