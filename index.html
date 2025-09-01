@@ -5,114 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Majalah Digital Interaktif (Google Sheets)</title>
     <style>
-        /* --- FONT & DASAR --- */
-        :root {
-            --warna-utama: #1b5e20;
-            --warna-aksen: #ffc107;
-        }
+        :root { --warna-utama: #1b5e20; --warna-aksen: #ffc107; }
         body { font-family: 'Georgia', 'Times New Roman', Times, serif; margin: 0; padding: 0; background-color: #f8f9fa; color: #333; }
-
-        /* --- Tombol Admin (Transparan & Lebih Kecil) --- */
-        .admin-controls {
-            max-width: 800px;
-            margin: 20px auto;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            justify-content: center;
-            padding: 10px;
-            border-radius: 12px;
-            background: rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-        .admin-btn {
-            padding: 6px 14px;
-            font-size: 0.8em;
-            font-weight: bold;
-            border-radius: 8px;
-            border: none;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        #btn-new-article { background-color: var(--warna-utama); color: white; }
-        #btn-edit-last-article { background-color: #546e7a; color: white; }
-        #btn-edit-pengaturan { background-color: #e65100; color: white; }
+        .admin-controls { max-width: 800px; margin: 20px auto; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; padding: 10px; border-radius: 12px; background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .admin-btn { padding: 6px 14px; font-size: 0.8em; font-weight: bold; border-radius: 8px; border: none; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        #btn-new-article, #btn-edit-last-article, #btn-edit-pengaturan { color: white; }
+        #btn-new-article { background-color: var(--warna-utama); }
+        #btn-edit-last-article { background-color: #546e7a; }
+        #btn-edit-pengaturan { background-color: #e65100; }
         .admin-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
-        
-        /* --- MODAL (POP-UP) (Transparan & Lebih Kecil) --- */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: none; justify-content: center; align-items: center;
-            z-index: 1000; backdrop-filter: blur(2px);
-        }
-        .modal-content {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            padding: 20px; border-radius: 12px; width: 90%; 
-            max-width: 450px;
-            max-height: 90vh; overflow-y: auto; box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-            position: relative;
-        }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); display: none; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(2px); }
+        .modal-content { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.3); padding: 20px; border-radius: 12px; width: 90%; max-width: 450px; max-height: 90vh; overflow-y: auto; box-shadow: 0 5px 20px rgba(0,0,0,0.2); position: relative; }
         .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ddd; padding-bottom: 10px; margin-bottom: 15px; }
         .modal-header h2 { margin: 0; color: var(--warna-utama); font-size: 1.2em; }
         .modal-close-btn { font-size: 1.8em; font-weight: bold; cursor: pointer; color: #aaa; line-height: 1; }
         .modal-close-btn:hover { color: #333; }
-
-        /* --- FORMULIR DENGAN TOMBOL "TERAPKAN" PER INPUT --- */
-        .setting-row {
-            display: flex;
-            flex-wrap: nowrap;
-            align-items: flex-end;
-            gap: 8px;
-            padding-bottom: 12px;
-            margin-bottom: 12px;
-            border-bottom: 1px solid #e0e0e0;
-        }
+        .setting-row { display: flex; flex-wrap: nowrap; align-items: flex-end; gap: 8px; padding-bottom: 12px; margin-bottom: 12px; border-bottom: 1px solid #e0e0e0; }
         .setting-input-group { flex-grow: 1; min-width: 0; }
         .setting-input-group label { display: block; margin-bottom: 5px; font-weight: bold; color: #2e7d32; font-size: 0.8em; }
         .input-with-history input, .input-with-history textarea { font-size: 0.9em; padding: 8px; }
-        .btn-apply {
-            padding: 7px 10px; font-size: 0.75em; font-weight: bold; border-radius: 6px; border: none;
-            background-color: #1976d2; color: white; cursor: pointer; transition: background-color 0.3s;
-            display: flex; align-items: center; justify-content: center; gap: 5px;
-            flex-shrink: 0;
-            margin-bottom: 2px;
-        }
+        .btn-apply { padding: 7px 10px; font-size: 0.75em; font-weight: bold; border-radius: 6px; border: none; background-color: #1976d2; color: white; cursor: pointer; transition: background-color 0.3s; display: flex; align-items: center; justify-content: center; gap: 5px; flex-shrink: 0; margin-bottom: 2px; }
         .btn-apply:hover { background-color: #1565c0; }
-
-        /* --- BAGIAN GENERATOR AI --- */
-        .ai-generator-section {
-            padding-bottom: 15px;
-            margin-bottom: 15px;
-            border-bottom: 1px dashed #aaa;
-        }
-        .ai-generator-section p {
-            font-weight: bold;
-            color: #333;
-            margin-top: 0;
-            text-align: center;
-        }
-        .ai-prompt-group {
-            display: flex;
-            gap: 8px;
-            align-items: flex-end;
-        }
-        .ai-prompt-group .form-group {
-            flex-grow: 1;
-            margin-bottom: 0;
-        }
-        .ai-prompt-group .btn-update {
-            flex-shrink: 0;
-            width: auto;
-            font-size: 0.8em;
-            padding: 8px 12px;
-        }
-        
+        .ai-generator-section { padding-bottom: 15px; margin-bottom: 15px; border-bottom: 1px dashed #aaa; }
+        .ai-generator-section p { font-weight: bold; color: #333; margin-top: 0; text-align: center; }
+        .ai-prompt-group { display: flex; gap: 8px; align-items: flex-end; }
+        .ai-prompt-group .form-group { flex-grow: 1; margin-bottom: 0; }
+        .ai-prompt-group .btn-update { flex-shrink: 0; width: auto; font-size: 0.8em; padding: 8px 12px; }
         .notification { padding: 12px; margin-bottom: 15px; border-radius: 5px; text-align: center; font-weight: bold; display: none; border: 1px solid transparent; opacity: 0; transition: opacity 0.5s; }
         .notification.show { display: block; opacity: 1; }
         .notification.error { background-color: #f8d7da; color: #721c24; border-color: #f5c6cb; }
@@ -128,96 +46,44 @@
         .btn-update.loading .spinner, .btn-apply.loading .spinner { display: block; }
         .btn-update.loading .btn-text, .btn-apply.loading .btn-text { display: none; }
         @keyframes spin { to { transform: rotate(360deg); } }
-        
         .container-majalah { background-color: #ffffff; transition: opacity 0.5s ease-in; }
-        
-        header { 
-            max-width: 800px;
-            margin: 0 auto;
-            box-sizing: border-box;
-            display: flex; 
-            align-items: center;
-            padding: 15px 25px; 
-            border-bottom: 4px solid var(--warna-aksen); 
-        }
+        header, main, .footer-content { max-width: 800px; margin: 0 auto; box-sizing: border-box; }
+        header { display: flex; align-items: center; padding: 15px 25px; border-bottom: 4px solid var(--warna-aksen); }
         header .logo { flex-shrink: 0; }
         header .logo img { height: 60px; width: auto; }
         header .logo a { display: inline-block; transition: transform 0.2s ease-in-out; }
         header .logo a:hover { transform: scale(1.05); }
-        
-        header h1 { 
-            font-size: clamp(1.5em, 4vw, 2.2em); 
-            color: var(--warna-utama); 
-            text-align: center; 
-            margin: 0; 
-            padding: 0 15px;
-            flex-grow: 1;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            min-width: 0;
-        }
-
-        main, .footer-content {
-            max-width: 800px;
-            margin: 0 auto;
-            box-sizing: border-box;
-        }
+        header h1 { font-size: clamp(1.5em, 4vw, 2.2em); color: var(--warna-utama); text-align: center; margin: 0; padding: 0 15px; flex-grow: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
         main { padding: 25px; }
         article .judul-artikel { font-size: clamp(1.8em, 5vw, 2.2em); margin-top: 0; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px; color: #388e3c; }
-        
         .artikel-container::after { content: ""; clear: both; display: table; }
         .foto-samping { float: left; width: 45%; max-width: 320px; margin-right: 20px; margin-bottom: 15px; }
-        .foto-samping img { width: 100%; height: auto; display: block; border-radius: 5px; background-color: #eee; }
+        .foto-samping-inner { display: flex; flex-wrap: wrap; }
+        .foto-samping-inner a { display: block; box-sizing: border-box; padding: 0; }
+        .foto-samping-inner img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .foto-samping[data-count="1"] a { width: 100%; }
+        .foto-samping[data-count="2"] a { width: 50%; }
+        .foto-samping[data-count="3"] a, .foto-samping[data-count="4"] a { width: 50%; }
         .teks-artikel { text-align: justify; line-height: 1.6; font-size: 1em; }
-        
         footer { background-color: var(--warna-utama); color: #ffffff; padding: 20px 0; text-align: center; }
         .footer-content { display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; gap: 15px; font-size: 0.9em; padding: 0 15px; }
         #footerMedsos a { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; color: white; transition: opacity 0.3s; }
         #footerMedsos a:hover { opacity: 0.8; }
-        
         .skeleton { animation: skeleton-pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
         @keyframes skeleton-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
         .skeleton-text { height: 1em; background-color: #e0e0e0; border-radius: 4px; }
         .skeleton-img { background-color: #e0e0e0; }
-
         .read-more-mobile { display: none; }
-        
         @media (max-width: 650px) { 
             body { padding: 0; padding-bottom: 85px; }
             .admin-controls { margin: 0; border-radius: 0; border-left: none; border-right: none; padding: 15px 10px; } 
             main { padding: 15px; }
-            
             header { padding: 10px 15px; }
             header h1 { padding: 0 10px; }
-
             .teks-artikel { font-size: 1.1em; }
-            .foto-samping { float: left; width: 30%; margin-right: 15px; }
-            
-            footer {
-                position: fixed;
-                bottom: 0;
-                left: 0;
-                width: 100%;
-                z-index: 999;
-                box-shadow: 0 -3px 10px rgba(0,0,0,0.15);
-                box-sizing: border-box;
-            }
-            .read-more-mobile {
-                display: block;
-                position: fixed;
-                bottom: 85px;
-                left: 0;
-                width: 100%;
-                padding: 30px 0 10px 0;
-                background: linear-gradient(to bottom, transparent, #f8f9fa 50%);
-                text-align: center;
-                color: var(--warna-utama);
-                font-weight: bold;
-                font-style: italic;
-                z-index: 998;
-                pointer-events: none;
-            }
+            .foto-samping { float: none; width: 100%; margin-right: 0; }
+            footer { position: fixed; bottom: 0; left: 0; width: 100%; z-index: 999; box-shadow: 0 -3px 10px rgba(0,0,0,0.15); box-sizing: border-box; }
+            .read-more-mobile { display: block; position: fixed; bottom: 85px; left: 0; width: 100%; padding: 30px 0 10px 0; background: linear-gradient(to bottom, transparent, #f8f9fa 50%); text-align: center; color: var(--warna-utama); font-weight: bold; font-style: italic; z-index: 998; pointer-events: none; }
         }
     </style>
 </head>
@@ -250,7 +116,7 @@
                 <article>
                     <h2 class="judul-artikel" id="artikelJudul"></h2>
                     <div class="artikel-container">
-                        <div class="foto-samping"><img id="artikelFoto" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Foto Berita"></div>
+                        <div class="foto-samping"><div class="foto-samping-inner" id="foto-container"></div></div>
                         <div class="teks-artikel" id="artikelTeks"></div>
                     </div>
                 </article>
@@ -312,28 +178,65 @@
         modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
         
         function populateArticleForm() {
-            const article = isEditingArticle ? (fullData.article || {}) : {};
+            const article = isEditingArticle ? (fullData.article || { imageUrls: [''] }) : { imageUrls: [''] };
             const buttonText = isEditingArticle ? 'Perbarui Berita' : 'Publikasikan';
+
+            let photoInputsHtml = article.imageUrls.map((url, index) => `
+                <div class="ai-prompt-group" style="margin-bottom: 10px;">
+                    <input type="url" class="photo-link-input" value="${escapeHTML(url || '')}" placeholder="Link foto ${index + 1}">
+                    <button class="btn-update" onclick="removePhotoInput(this)" style="background: #dc3545; width: auto; padding: 8px 10px;">-</button>
+                </div>
+            `).join('');
+
             modalBody.innerHTML = `
                 <div id="articleNotification" class="notification"></div>
                 <div class="ai-generator-section">
                     <p>✨ Buat Teks Otomatis dengan AI</p>
                     <div class="ai-prompt-group">
-                        <div class="form-group">
-                            <label for="aiTextPrompt">Topik Berita:</label>
-                            <input type="text" id="aiTextPrompt" placeholder="Contoh: Aksi bersih-bersih masjid...">
-                        </div>
-                        <button class="btn-update" onclick="generateWithGemini(this)">
-                            <span class="btn-text">Buat</span>
-                            <div class="spinner"></div>
-                        </button>
+                        <div class="form-group"><label for="aiTextPrompt">Topik Berita:</label><input type="text" id="aiTextPrompt" placeholder="Contoh: Aksi bersih-bersih masjid..."></div>
+                        <button class="btn-update" onclick="generateWithGemini(this)"><span class="btn-text">Buat</span><div class="spinner"></div></button>
                     </div>
                 </div>
                 <div class="form-group"><label>Judul Berita:</label><input type="text" id="modalJudul" value="${escapeHTML(article.title || '')}"></div>
                 <div class="form-group"><label>Isi Berita:</label><textarea id="modalIsi">${escapeHTML(article.content || '')}</textarea></div>
-                <div class="form-group"><label>Link/URL Foto:</label><input type="url" id="modalFotoLink" value="${escapeHTML(article.imageUrl || '')}"></div>
+                <div class="form-group">
+                    <label>Link/URL Foto:</label>
+                    <div id="photo-inputs-container">${photoInputsHtml}</div>
+                    <button class="btn-update" id="add-photo-btn" onclick="addPhotoInput()" style="background: #007bff; font-size: 0.9em; padding: 8px;">+ Tambah Foto</button>
+                </div>
                 <button class="btn-update" onclick="updateArticle(event)"><span class="btn-text">${buttonText}</span><div class="spinner"></div></button>
             `;
+            checkPhotoLimit();
+        }
+
+        window.addPhotoInput = function() {
+            const container = document.getElementById('photo-inputs-container');
+            const inputCount = container.children.length;
+            if (inputCount < 4) {
+                const newIndex = inputCount + 1;
+                const newPhotoInput = document.createElement('div');
+                newPhotoInput.className = 'ai-prompt-group';
+                newPhotoInput.style.marginBottom = '10px';
+                newPhotoInput.innerHTML = `
+                    <input type="url" class="photo-link-input" placeholder="Link foto ${newIndex}">
+                    <button class="btn-update" onclick="removePhotoInput(this)" style="background: #dc3545; width: auto; padding: 8px 10px;">-</button>
+                `;
+                container.appendChild(newPhotoInput);
+            }
+            checkPhotoLimit();
+        }
+
+        window.removePhotoInput = function(button) {
+            button.parentElement.remove();
+            checkPhotoLimit();
+        }
+
+        function checkPhotoLimit() {
+            const container = document.getElementById('photo-inputs-container');
+            const addBtn = document.getElementById('add-photo-btn');
+            if (container && addBtn) {
+                addBtn.style.display = container.children.length >= 4 ? 'none' : 'block';
+            }
         }
 
         function populateSettingsForm() {
@@ -367,13 +270,27 @@
                 return `https://${url}`;
             };
             document.getElementById('artikelJudul').innerText = article.title || "Belum Ada Berita";
-            document.getElementById('artikelFoto').src = article.imageUrl || "https://placehold.co/250x250?text=Gambar";
             const teksContainer = document.getElementById('artikelTeks');
             teksContainer.innerHTML = '';
             if(article.content){ article.content.split('\n').forEach(p => { if(p.trim() !== ''){ const newP = document.createElement('p'); newP.innerText = p; teksContainer.appendChild(newP); }}); } else { teksContainer.innerHTML = "<p>Silakan masukkan berita pertama.</p>"; }
-            document.getElementById('namaMajalah').innerText = settings.Nama_Majalah || 'MAJALAH KITA';
             
-            // Logika baru untuk menyembunyikan logo jika link kosong
+            const fotoContainer = document.getElementById('foto-container');
+            const fotoSampingDiv = fotoContainer.parentElement;
+            fotoContainer.innerHTML = '';
+            const imageUrls = article.imageUrls || [];
+            if (imageUrls.length > 0 && imageUrls[0]) {
+                fotoSampingDiv.style.display = 'block';
+                fotoSampingDiv.setAttribute('data-count', imageUrls.length);
+                imageUrls.forEach(url => {
+                    if(url.trim() !== '') {
+                        fotoContainer.innerHTML += `<a href="${formatUrl(url)}" target="_blank"><img src="${url}" alt="Foto Berita"></a>`;
+                    }
+                });
+            } else {
+                fotoSampingDiv.style.display = 'none';
+            }
+
+            document.getElementById('namaMajalah').innerText = settings.Nama_Majalah || 'MAJALAH KITA';
             const logoKuaContainer = document.querySelector('.logo-kua');
             const logoMasjidContainer = document.querySelector('.logo-masjid');
             const logoKuaLink = document.getElementById('logoKuaLink');
@@ -518,10 +435,6 @@
             }
         };
 
-        window.generateImageFromArticle = async function(button) {
-            showNotification("Fitur ini sedang dinonaktifkan.", 'error', 'article');
-        };
-
         function updateDOMForKey(key, value) {
             const formatUrl = (url) => {
                 if (!url || typeof url !== 'string' || url.trim() === '') return '#';
@@ -552,13 +465,16 @@
         };
 
         window.updateArticle = function(event) {
+            const photoInputs = document.querySelectorAll('.photo-link-input');
+            const imageUrls = Array.from(photoInputs).map(input => input.value.trim()).filter(url => url);
+            
             const payload = { type: 'article', isEdit: isEditingArticle, data: {
                 title: document.getElementById('modalJudul').value.trim(),
-                imageUrl: document.getElementById('modalFotoLink').value.trim(),
+                imageUrls: imageUrls,
                 content: document.getElementById('modalIsi').value.trim()
             }};
-            if (!payload.data.title || !payload.data.imageUrl || !payload.data.content) {
-                showNotification("Harap isi semua kolom berita.", 'error', 'article');
+            if (!payload.data.title || !payload.data.content) {
+                showNotification("Harap isi Judul dan Isi Berita.", 'error', 'article');
                 return;
             }
             sendData(payload, event.currentTarget, 'article');
