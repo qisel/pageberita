@@ -82,7 +82,7 @@
         #footerMedsos a:hover { opacity: 0.8; }
         .news-ticker-wrap { width: 100%; background-color: rgba(0,0,0,0.2); padding: 8px 0; overflow: hidden; white-space: nowrap; }
         .news-ticker { display: inline-block; animation: ticker-scroll 30s linear infinite; }
-        .news-ticker-wrap:hover .news-ticker { animation-play-state: paused; } /* PERBAIKAN DI SINI */
+        .news-ticker-wrap:hover .news-ticker { animation-play-state: paused; }
         .news-ticker-item { display: inline-block; margin: 0 20px; color: #fff; text-decoration: none; font-style: italic; }
         .news-ticker-item:hover { text-decoration: underline; }
         @keyframes ticker-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
@@ -148,7 +148,7 @@
                 <div class="logo logo-kua"><a id="logoKuaLink" href="#" target="_blank"><img id="logoKuaImg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Logo KUA"></a></div>
                 <div class="title-container">
                     <h1 id="namaMajalah"></h1>
-                    <p class="magazine-subtitle">“Mau posting berita di sini? Kirim lewat inbox Facebook (Messenger). Terima berita lucu, serius, hingga formal. Hubungi langsung Usman Moonggalo (FB).”</p>
+                    <p id="majalahSubtitle" class="magazine-subtitle"></p>
                 </div>
                 <div class="logo logo-masjid"><a id="logoMasjidLink" href="#" target="_blank"><img id="logoMasjidImg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Logo Masjid"></a></div>
             </header>
@@ -300,6 +300,7 @@
             };
             modalBody.innerHTML = `<div id="settingsNotification" class="notification"></div>
                 ${createSettingRow('Nama_Majalah', 'Nama Majalah')}
+                ${createSettingRow('Deskripsi_Halaman', 'Deskripsi Halaman', 'text', true)}
                 ${createSettingRow('Link_Logo_KUA', 'Link Logo KUA', 'url')}
                 ${createSettingRow('Link_Logo_Masjid', 'Link Logo Masjid', 'url')}
                 ${createSettingRow('Medsos', 'Nama Akun Facebook')}
@@ -347,25 +348,22 @@
             }
 
             document.getElementById('namaMajalah').innerText = settings.Nama_Majalah || 'MAJALAH KITA';
+            document.getElementById('majalahSubtitle').innerText = settings.Deskripsi_Halaman || '';
+            
             const logoKuaContainer = document.querySelector('.logo-kua');
             const logoMasjidContainer = document.querySelector('.logo-masjid');
-            const logoKuaLink = document.getElementById('logoKuaLink');
-            const logoKuaImg = document.getElementById('logoKuaImg');
-            const logoMasjidLink = document.getElementById('logoMasjidLink');
-            const logoMasjidImg = document.getElementById('logoMasjidImg');
-
             if (settings.Link_Logo_KUA && settings.Link_Logo_KUA.trim() !== '') {
-                logoKuaLink.href = formatUrl(settings.Link_Logo_KUA);
-                logoKuaImg.src = settings.Link_Logo_KUA;
                 logoKuaContainer.style.display = 'block';
+                logoKuaContainer.querySelector('a').href = formatUrl(settings.Link_Logo_KUA);
+                logoKuaContainer.querySelector('img').src = settings.Link_Logo_KUA;
             } else {
                 logoKuaContainer.style.display = 'none';
             }
 
             if (settings.Link_Logo_Masjid && settings.Link_Logo_Masjid.trim() !== '') {
-                logoMasjidLink.href = formatUrl(settings.Link_Logo_Masjid);
-                logoMasjidImg.src = settings.Link_Logo_Masjid;
                 logoMasjidContainer.style.display = 'block';
+                logoMasjidContainer.querySelector('a').href = formatUrl(settings.Link_Logo_Masjid);
+                logoMasjidContainer.querySelector('img').src = settings.Link_Logo_Masjid;
             } else {
                 logoMasjidContainer.style.display = 'none';
             }
@@ -382,7 +380,7 @@
                 recentArticles.forEach(item => {
                     tickerContent += `<a href="?berita=${item.id}" class="news-ticker-item">${escapeHTML(item.title)}</a> ★ `;
                 });
-                newsTicker.innerHTML = tickerContent.repeat(3); // Ulangi konten agar marquee mulus
+                newsTicker.innerHTML = tickerContent.repeat(3);
             }
             
             setupClickTrackers();
@@ -511,6 +509,7 @@
             };
             switch (key) {
                 case 'Nama_Majalah': document.getElementById('namaMajalah').innerText = value; break;
+                case 'Deskripsi_Halaman': document.getElementById('majalahSubtitle').innerText = value; break;
                 case 'Link_Logo_KUA': document.getElementById('logoKuaLink').href = formatUrl(value); document.getElementById('logoKuaImg').src = value || 'https://via.placeholder.com/150x150.png?text=Logo+KUA'; break;
                 case 'Link_Logo_Masjid': document.getElementById('logoMasjidLink').href = formatUrl(value); document.getElementById('logoMasjidImg').src = value || 'https://via.placeholder.com/150x150.png?text=Logo+Masjid'; break;
                 case 'Medsos': document.querySelector('#footerMedsos a span').innerText = value; break;
@@ -536,7 +535,7 @@
             const photoInputs = document.querySelectorAll('.photo-link-input');
             const imageUrls = Array.from(photoInputs).map(input => input.value.trim()).filter(url => url);
             
-            const payload = { type: 'article', isEdit: isEditingArticle, data: {
+            const payload = { type: isEditingArticle ? 'article-update' : 'article-new', articleId: fullData.article?.id, data: {
                 title: document.getElementById('modalJudul').value.trim(),
                 imageUrls: imageUrls,
                 content: document.getElementById('modalIsi').value.trim()
