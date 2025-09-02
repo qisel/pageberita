@@ -154,7 +154,7 @@
             <button class="btn-update" onclick="copyShareLink('share-link-contributor')">Salin Link Penulis</button>
         </div>
     </div>
-
+    
     <div id="confirmModal" class="modal-overlay">
         <div class="modal-content" style="max-width: 350px;">
             <div class="modal-header">
@@ -373,14 +373,6 @@
             `;
         }
         
-        function processMarkdownTables(text) {
-            if (!text) return '<p></p>';
-            if (!text.includes('|') || !text.includes('-')) {
-                return text.replace(/\n/g, '<br>');
-            }
-            return text;
-        }
-
         function displayContent(data) {
             const article = data.article || {}; 
             const settings = data.settings.current || {};
@@ -399,7 +391,7 @@
             document.getElementById('artikelJudul').innerText = article.title || "Belum Ada Berita";
             
             const teksContainer = document.getElementById('artikelTeks');
-            teksContainer.innerHTML = article.content ? processMarkdownTables(article.content.replace(/<br\s*\/?>/gi, '\n')) : "<p>Silakan masukkan berita pertama.</p>";
+            teksContainer.innerHTML = article.content ? article.content.replace(/\n/g, '<br>') : "<p>Silakan masukkan berita pertama.</p>";
 
             const fotoContainer = document.getElementById('foto-container');
             const fotoSampingDiv = fotoContainer.parentElement;
@@ -540,7 +532,7 @@
                 });
                 if (!response.ok) throw new Error(`API request failed with status ${response.status}`);
                 const result = await response.json();
-                if (!result.success) throw new Error(result.message);
+                if (!result.success) throw new Error(result.message || 'Unknown error from backend');
 
                 const candidate = result.data.candidates?.[0];
                 let generatedText = candidate?.content?.parts?.[0]?.text;
