@@ -64,10 +64,10 @@
         .title-container { flex-grow: 1; text-align: center; min-width: 0; padding: 0 15px; }
         header h1 { font-size: clamp(1.5em, 4vw, 2.2em); color: var(--warna-utama); margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .magazine-subtitle { font-size: 0.8em; font-style: italic; color: #555; margin: 4px 0 0 0; line-height: 1.3; }
-        main { padding: 25px; }
+        main { padding: 22px; } /* Dipersempit */
         article .judul-artikel { font-size: clamp(1.8em, 5vw, 2.2em); margin-top: 0; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px; color: #388e3c; }
         .artikel-container::after { content: ""; clear: both; display: table; }
-        .foto-samping { float: left; width: 45%; max-width: 320px; margin-right: 20px; margin-bottom: 15px; }
+        .foto-samping { float: left; width: 45%; max-width: 320px; margin-right: 15px; margin-bottom: 10px; } /* Dipersempit */
         .foto-samping-inner { display: flex; flex-wrap: wrap; }
         .foto-samping-inner a { display: block; box-sizing: border-box; padding: 0; }
         .foto-samping-inner img { width: 100%; height: 100%; object-fit: cover; display: block; }
@@ -105,8 +105,7 @@
             .footer-content { gap: 10px; padding-bottom: 0; }
             .footer-content-inner { font-size: 0.75em; }
             .teks-artikel { font-size: 1.1em; }
-            .foto-samping[data-count="1"] { float: left; width: 45%; margin-right: 15px; }
-            .foto-samping[data-count="2"], .foto-samping[data-count="3"], .foto-samping[data-count="4"] { float: none; width: 100%; margin-right: 0; }
+            .foto-samping { float: none; width: 100%; margin-right: 0; }
             footer { position: fixed; bottom: 0; left: 0; width: 100%; z-index: 999; box-shadow: 0 -3px 10px rgba(0,0,0,0.15); box-sizing: border-box; }
             .read-more-mobile { display: block; position: fixed; bottom: 120px; left: 0; width: 100%; padding: 30px 0 10px 0; background: linear-gradient(to bottom, transparent, #f8f9fa 50%); text-align: center; color: var(--warna-utama); font-weight: bold; font-style: italic; z-index: 998; pointer-events: none; }
         }
@@ -134,20 +133,14 @@
     <div id="shareModal" class="modal-overlay">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Bagikan Link</h2>
+                <h2>Bagikan Link Permanen</h2>
                 <span id="shareModalClose" class="modal-close-btn">&times;</span>
             </div>
+            <p>Salin dan bagikan link di bawah ini. Link ini akan selalu menampilkan berita yang sedang Anda lihat.</p>
             <div class="form-group">
-                <label for="share-link-public">Link untuk Pembaca:</label>
-                <input type="text" id="share-link-public" readonly style="background-color: #eee;">
+                <input type="text" id="share-link-input" readonly style="background-color: #eee;">
             </div>
-            <button class="btn-update" onclick="copyShareLink('share-link-public')">Salin Link Pembaca</button>
-            <hr style="margin: 20px 0;">
-            <div class="form-group">
-                <label for="share-link-contributor">Link untuk Kontributor:</label>
-                <input type="text" id="share-link-contributor" readonly style="background-color: #eee;">
-            </div>
-            <button class="btn-update" onclick="copyShareLink('share-link-contributor')">Salin Link Kontributor</button>
+            <button class="btn-update" onclick="copyShareLink()">Salin Link</button>
         </div>
     </div>
 
@@ -205,7 +198,6 @@
                 const idToShare = fullData.article?.id;
                 if (idToShare) {
                     document.getElementById('share-link-public').value = `${window.location.origin}${window.location.pathname}?berita=${idToShare}&view=public`;
-                    document.getElementById('share-link-contributor').value = `${window.location.origin}${window.location.pathname}?mode=kontributor`;
                     shareModal.style.display = 'flex';
                 } else { alert("Tidak ada berita untuk dibagikan."); }
             } else {
