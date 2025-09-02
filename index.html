@@ -74,10 +74,10 @@
         .foto-samping[data-count="1"] a { width: 100%; }
         .foto-samping[data-count="2"] a { width: 50%; }
         .foto-samping[data-count="3"] a, .foto-samping[data-count="4"] a { width: 50%; }
-        .teks-artikel { text-align: justify; line-height: 1.6; font-size: 1em; }
-        .teks-artikel table { width: 100%; border-collapse: collapse; margin: 0.5em 0; font-size: 0.9em; white-space: normal; }
+        .teks-artikel { text-align: justify; line-height: 1.6; font-size: 1em; white-space: pre-wrap; } /* white-space added for better formatting */
+        .teks-artikel table { width: 100%; border-collapse: collapse; margin: 1em 0; font-size: 0.9em; white-space: normal; }
         .teks-artikel th, .teks-artikel td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        .teks-artikel th { background-color: #f2f2f2; }
+        .teks-artikel th { background-color: #f2f2f2; font-weight: bold; }
         .teks-artikel tr:nth-child(even) { background-color: #f9f9f9; }
         footer { background-color: var(--warna-utama); color: #ffffff; padding: 15px 0; text-align: center; }
         .footer-content { display: flex; flex-direction: column; gap: 15px; }
@@ -142,7 +142,7 @@
             <div class="form-group">
                 <input type="text" id="share-link-input" readonly style="background-color: #eee;">
             </div>
-            <button class="btn-update" onclick="copyShareLink()">Salin Link</button>
+            <button class="btn-update" onclick="copyShareLink('share-link-input')">Salin Link</button>
         </div>
     </div>
 
@@ -243,7 +243,7 @@
                 const savedName = localStorage.getItem('namaPenulis') || '';
                 authorInputHtml = `<div class="form-group"><label for="modalNamaPenulis">Nama Penulis:</label><input type="text" id="modalNamaPenulis" value="${escapeHTML(savedName)}"></div>`;
             }
-            let photoInputsHtml = article.imageUrls.map((url, index) => `<div class="ai-prompt-group" style="margin-bottom: 10px;"><input type="url" class="photo-link-input" value="${escapeHTML(url || '')}" placeholder="Link foto ${index + 1}"><button class="btn-update" onclick="removePhotoInput(this)" style="background: #dc3545; width: auto; padding: 8px 10px;">-</button></div>`).join('');
+            let photoInputsHtml = (article.imageUrls || ['']).map((url, index) => `<div class="ai-prompt-group" style="margin-bottom: 10px;"><input type="url" class="photo-link-input" value="${escapeHTML(url || '')}" placeholder="Link foto ${index + 1}"><button class="btn-update" onclick="removePhotoInput(this)" style="background: #dc3545; width: auto; padding: 8px 10px;">-</button></div>`).join('');
             modalBody.innerHTML = `
                 <div id="articleNotification" class="notification"></div>
                 ${authorInputHtml}
@@ -266,9 +266,24 @@
             checkPhotoLimit();
         }
 
-        window.addPhotoInput = function() { /* ... unchanged ... */ };
-        window.removePhotoInput = function(button) { /* ... unchanged ... */ };
-        function checkPhotoLimit() { /* ... unchanged ... */ }
+        window.addPhotoInput = function() {
+             const container = document.getElementById('photo-inputs-container');
+             if (container.children.length < 4) {
+                 const newIndex = container.children.length + 1;
+                 const newInput = `<div class="ai-prompt-group" style="margin-bottom: 10px;"><input type="url" class="photo-link-input" placeholder="Link foto ${newIndex}"><button class="btn-update" onclick="removePhotoInput(this)" style="background: #dc3545; width: auto; padding: 8px 10px;">-</button></div>`;
+                 container.insertAdjacentHTML('beforeend', newInput);
+             }
+             checkPhotoLimit();
+        };
+        window.removePhotoInput = function(button) {
+             button.parentElement.remove();
+             checkPhotoLimit();
+        };
+        function checkPhotoLimit() {
+             const container = document.getElementById('photo-inputs-container');
+             const addButton = document.getElementById('add-photo-btn');
+             addButton.style.display = container.children.length >= 4 ? 'none' : 'block';
+        }
 
         function populateSettingsForm() {
             const createSettingRow = (key, label, inputType = 'text', isTextarea = false) => {
@@ -292,6 +307,56 @@
             `;
         }
         
+        // NEW FUNCTION: Converts simple Markdown tables to HTML tables
+        function processMarkdownTables(text) {
+            if (!text) return '';
+            const lines = text.split('\n');
+            let html = '';
+            let inTable = false;
+
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (line.startsWith('|') && line.endsWith('|')) {
+                    const nextLine = (lines[i + 1] || '').trim();
+                    // Check for header row followed by separator
+                    if (nextLine.startsWith('|') && nextLine.includes('-')) {
+                        inTable = true;
+                        html += '<table>\n<thead>\n<tr>\n';
+                        const headers = line.split('|').slice(1, -1);
+                        headers.forEach(header => {
+                            html += `  <th>${header.trim()}</th>\n`;
+                        });
+                        html += '</tr>\n</thead>\n<tbody>\n';
+                        i++; // Skip separator line
+                        continue;
+                    }
+                    if (inTable) {
+                        html += '<tr>\n';
+                        const cells = line.split('|').slice(1, -1);
+                        cells.forEach(cell => {
+                            html += `  <td>${cell.trim()}</td>\n`;
+                        });
+                        html += '</tr>\n';
+                    } else {
+                        html += `<p>${lines[i]}</p>\n`;
+                    }
+                } else {
+                    if (inTable) {
+                        html += '</tbody>\n</table>\n';
+                        inTable = false;
+                    }
+                    // Prevent adding empty paragraphs for blank lines
+                    if (lines[i].trim() !== '') {
+                         html += `<p>${lines[i]}</p>\n`;
+                    }
+                }
+            }
+            if (inTable) {
+                html += '</tbody>\n</table>\n';
+            }
+            return html;
+        }
+
         function displayContent(data) {
             const article = data.article || {}; 
             const settings = data.settings.current || {};
@@ -310,7 +375,8 @@
             document.getElementById('artikelJudul').innerText = article.title || "Belum Ada Berita";
             
             const teksContainer = document.getElementById('artikelTeks');
-            teksContainer.innerHTML = article.content ? article.content : "<p>Silakan masukkan berita pertama.</p>";
+            // MODIFIED: Use the new function to process content
+            teksContainer.innerHTML = article.content ? processMarkdownTables(article.content) : "<p>Silakan masukkan berita pertama.</p>";
 
             const fotoContainer = document.getElementById('foto-container');
             const fotoSampingDiv = fotoContainer.parentElement;
@@ -492,8 +558,8 @@
             switch (key) {
                 case 'Nama_Majalah': document.getElementById('namaMajalah').innerText = value; break;
                 case 'Deskripsi_Halaman': document.getElementById('majalahSubtitle').innerText = value; break;
-                case 'Link_Logo_KUA': document.getElementById('logoKuaLink').href = formatUrl(value); document.getElementById('logoKuaImg').src = value || 'https://via.placeholder.com/150x150.png?text=Logo+KUA'; break;
-                case 'Link_Logo_Masjid': document.getElementById('logoMasjidLink').href = formatUrl(value); document.getElementById('logoMasjidImg').src = value || 'https://via.placeholder.com/150x150.png?text=Logo+Masjid'; break;
+                case 'Link_Logo_KUA': document.getElementById('logoKuaLink').href = formatUrl(value); document.getElementById('logoKuaImg').src = value || 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs='; break;
+                case 'Link_Logo_Masjid': document.getElementById('logoMasjidLink').href = formatUrl(value); document.getElementById('logoMasjidImg').src = value || 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs='; break;
                 case 'Medsos': document.querySelector('#footerMedsos a span').innerText = value; break;
                 case 'Link_Facebook': document.querySelector('#footerMedsos a').href = formatUrl(value); break;
                 case 'No_HP': document.getElementById('footerKontak').innerHTML = `<strong>Nomor HP:</strong> ${value}`; break;
@@ -585,6 +651,7 @@
             input.select();
             input.setSelectionRange(0, 99999);
             try {
+                // Use execCommand as a fallback for environments where clipboard API might be restricted
                 document.execCommand('copy');
                 alert('Link berhasil disalin!');
             } catch (err) {
@@ -594,4 +661,3 @@
     </script>
 </body>
 </html>
-
