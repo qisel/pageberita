@@ -16,9 +16,9 @@
         body { font-family: 'Georgia', 'Times New Roman', Times, serif; margin: 0; padding: 0; background-color: #f8f9fa; color: #333; }
         .admin-controls { max-width: 800px; margin: 20px auto; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; padding: 10px; border-radius: 12px; background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         .admin-btn { padding: 6px 14px; font-size: 0.8em; font-weight: bold; border-radius: 8px; border: none; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        #btn-new-article, #btn-edit-last-article, #btn-edit-pengaturan, #btn-share { color: white; }
+        #btn-new-article, #btn-archive, #btn-edit-pengaturan, #btn-share { color: white; }
         #btn-new-article { background-color: var(--warna-utama); }
-        #btn-edit-last-article { background-color: #546e7a; }
+        #btn-archive { background-color: #546e7a; }
         #btn-edit-pengaturan { background-color: #e65100; }
         #btn-share { background-color: #007bff; }
         .admin-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
@@ -74,10 +74,10 @@
         .foto-samping[data-count="1"] a { width: 100%; }
         .foto-samping[data-count="2"] a { width: 50%; }
         .foto-samping[data-count="3"] a, .foto-samping[data-count="4"] a { width: 50%; }
-        .teks-artikel { text-align: justify; line-height: 1.6; font-size: 1em; white-space: pre-wrap; } /* white-space added for better formatting */
+        .teks-artikel { text-align: justify; line-height: 1.6; font-size: 1em; }
         .teks-artikel table { width: 100%; border-collapse: collapse; margin: 1em 0; font-size: 0.9em; white-space: normal; }
         .teks-artikel th, .teks-artikel td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        .teks-artikel th { background-color: #f2f2f2; font-weight: bold; }
+        .teks-artikel th { background-color: #f2f2f2; }
         .teks-artikel tr:nth-child(even) { background-color: #f9f9f9; }
         footer { background-color: var(--warna-utama); color: #ffffff; padding: 15px 0; text-align: center; }
         .footer-content { display: flex; flex-direction: column; gap: 15px; }
@@ -85,7 +85,7 @@
         #footerMedsos a { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; color: white; transition: opacity 0.3s; }
         #footerMedsos a:hover { opacity: 0.8; }
         .news-ticker-wrap { width: 100%; background-color: rgba(0,0,0,0.2); padding: 8px 0; overflow: hidden; white-space: nowrap; }
-        .news-ticker { display: inline-block; animation: ticker-scroll 60s linear infinite; } /* Diperlambat */
+        .news-ticker { display: inline-block; animation: ticker-scroll 60s linear infinite; }
         .news-ticker-wrap:hover .news-ticker { animation-play-state: paused; }
         .news-ticker-item { display: inline-block; margin: 0 20px; color: #fff; text-decoration: none; font-style: italic; }
         .news-ticker-item:hover { text-decoration: underline; }
@@ -95,6 +95,10 @@
         .skeleton-text { height: 1em; background-color: #e0e0e0; border-radius: 4px; }
         .skeleton-img { background-color: #e0e0e0; }
         .read-more-mobile { display: none; }
+        .archive-list { list-style: none; padding: 0; }
+        .archive-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #ddd; }
+        .archive-item span { flex-grow: 1; margin-right: 10px; }
+        .archive-item button { font-size: 0.8em; padding: 4px 8px; }
         @media (max-width: 650px) { 
             body { padding: 0; padding-bottom: 120px; }
             .admin-controls { margin: 0; border-radius: 0; border-left: none; border-right: none; padding: 15px 10px; } 
@@ -106,8 +110,7 @@
             .footer-content { gap: 10px; padding-bottom: 0; }
             .footer-content-inner { font-size: 0.75em; }
             .teks-artikel { font-size: 1.1em; }
-            .foto-samping[data-count="1"] { float: left; width: 45%; margin-right: 15px; }
-            .foto-samping[data-count="2"], .foto-samping[data-count="3"], .foto-samping[data-count="4"] { float: none; width: 100%; margin-right: 0; }
+            .foto-samping { float: none; width: 100%; margin-right: 0; }
             footer { position: fixed; bottom: 0; left: 0; width: 100%; z-index: 999; box-shadow: 0 -3px 10px rgba(0,0,0,0.15); box-sizing: border-box; }
             .read-more-mobile { display: block; position: fixed; bottom: 120px; left: 0; width: 100%; padding: 30px 0 10px 0; background: linear-gradient(to bottom, transparent, #f8f9fa 50%); text-align: center; color: var(--warna-utama); font-weight: bold; font-style: italic; z-index: 998; pointer-events: none; }
         }
@@ -117,7 +120,7 @@
 
     <div id="admin-panel" class="admin-controls">
         <button id="btn-new-article" class="admin-btn">Tulis Berita Baru</button>
-        <button id="btn-edit-last-article" class="admin-btn">Edit Berita Terakhir</button>
+        <button id="btn-archive" class="admin-btn">Arsip Berita</button>
         <button id="btn-edit-pengaturan" class="admin-btn">Edit Pengaturan</button>
         <button id="btn-share" class="admin-btn">Bagikan</button>
     </div>
@@ -135,14 +138,33 @@
     <div id="shareModal" class="modal-overlay">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Bagikan Link Permanen</h2>
+                <h2>Bagikan Link</h2>
                 <span id="shareModalClose" class="modal-close-btn">&times;</span>
             </div>
-            <p>Salin dan bagikan link di bawah ini. Link ini akan selalu menampilkan berita yang sedang Anda lihat.</p>
             <div class="form-group">
-                <input type="text" id="share-link-input" readonly style="background-color: #eee;">
+                <label for="share-link-public">Link untuk Pembaca:</label>
+                <input type="text" id="share-link-public" readonly style="background-color: #eee;">
             </div>
-            <button class="btn-update" onclick="copyShareLink('share-link-input')">Salin Link</button>
+            <button class="btn-update" onclick="copyShareLink('share-link-public')">Salin Link Pembaca</button>
+            <hr style="margin: 20px 0;">
+            <div class="form-group">
+                <label for="share-link-contributor">Link untuk Penulis:</label>
+                <input type="text" id="share-link-contributor" readonly style="background-color: #eee;">
+            </div>
+            <button class="btn-update" onclick="copyShareLink('share-link-contributor')">Salin Link Penulis</button>
+        </div>
+    </div>
+
+    <div id="confirmModal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 350px;">
+            <div class="modal-header">
+                <h2>Konfirmasi</h2>
+            </div>
+            <p id="confirm-message">Apakah Anda yakin?</p>
+            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+                <button id="confirm-btn-no" class="admin-btn" style="background: #6c757d;">Batal</button>
+                <button id="confirm-btn-yes" class="admin-btn" style="background: #c82333;">Ya</button>
+            </div>
         </div>
     </div>
 
@@ -187,26 +209,31 @@
     <script>
         const GOOGLE_SHEET_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzswbfPgXcpUzsP3oHTt16-kPUBPcFceebghaBdXeKgOo9aq7932mZi20e8Orxcor9OlQ/exec';
         let fullData = {}; 
-        let isEditingArticle = false;
+        let currentArticleIdToEdit = null;
         let isContributorMode = false;
 
         const modal = document.getElementById('adminModal');
         const modalTitle = document.getElementById('modalTitle');
         const modalBody = document.getElementById('modalBody');
         const shareModal = document.getElementById('shareModal');
+        const confirmModal = document.getElementById('confirmModal');
+        let onConfirmAction = null;
 
         function openModal(type, articleId = null) {
+            currentArticleIdToEdit = articleId;
             if (type === 'share') {
                 const idToShare = fullData.article?.id;
                 if (idToShare) {
-                    document.getElementById('share-link-input').value = `${window.location.origin}${window.location.pathname}?berita=${idToShare}&view=public`;
+                    document.getElementById('share-link-public').value = `${window.location.origin}${window.location.pathname}?berita=${idToShare}&view=public`;
+                    document.getElementById('share-link-contributor').value = `${window.location.origin}${window.location.pathname}?mode=penulis`;
                     shareModal.style.display = 'flex';
                 } else { alert("Tidak ada berita untuk dibagikan."); }
             } else {
-                if (type === 'new-article') { isEditingArticle = false; modalTitle.innerText = 'Tulis Berita Baru'; populateArticleForm(); }
-                else if (type === 'edit-article') { isEditingArticle = true; modalTitle.innerText = 'Edit Berita Terakhir'; populateArticleForm(fullData.article?.id); }
+                if (type === 'new-article') { modalTitle.innerText = 'Tulis Berita Baru'; populateArticleForm(); }
+                else if (type === 'edit-article') { modalTitle.innerText = 'Edit Berita'; modalBody.innerHTML = '<p>Memuat data berita...</p>'; modal.style.display = 'flex'; populateArticleForm(articleId); }
                 else if (type === 'settings') { modalTitle.innerText = 'Edit Pengaturan Umum'; populateSettingsForm(); }
-                modal.style.display = 'flex';
+                else if (type === 'archive') { modalTitle.innerText = 'Arsip Berita'; populateArchiveModal(); }
+                if(type !== 'edit-article') modal.style.display = 'flex';
             }
         }
 
@@ -214,10 +241,25 @@
             modal.style.display = 'none';
             modalBody.innerHTML = '';
             shareModal.style.display = 'none';
+            confirmModal.style.display = 'none';
         }
 
+        function showConfirmModal(message, callback) {
+            document.getElementById('confirm-message').innerText = message;
+            confirmModal.style.display = 'flex';
+            onConfirmAction = callback;
+        }
+
+        document.getElementById('confirm-btn-yes').addEventListener('click', () => {
+            if (onConfirmAction) {
+                onConfirmAction();
+            }
+            confirmModal.style.display = 'none';
+        });
+        document.getElementById('confirm-btn-no').addEventListener('click', closeModal);
+
         function showNotification(message, type = 'error', panel = 'article') {
-            const notificationId = panel === 'article' ? 'articleNotification' : 'settingsNotification';
+            const notificationId = panel === 'article' ? 'articleNotification' : (panel === 'archive' ? 'archiveNotification' : 'settingsNotification');
             const notificationElement = document.getElementById(notificationId);
             if (notificationElement) {
                 notificationElement.textContent = message;
@@ -227,23 +269,40 @@
         }
 
         document.getElementById('btn-new-article').addEventListener('click', () => openModal('new-article'));
-        document.getElementById('btn-edit-last-article').addEventListener('click', () => openModal('edit-article'));
+        document.getElementById('btn-archive').addEventListener('click', () => openModal('archive'));
         document.getElementById('btn-edit-pengaturan').addEventListener('click', () => openModal('settings'));
         document.getElementById('btn-share').addEventListener('click', () => openModal('share'));
         document.getElementById('modalClose').addEventListener('click', closeModal);
         document.getElementById('shareModalClose').addEventListener('click', closeModal);
         modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
         shareModal.addEventListener('click', (e) => { if (e.target === shareModal) closeModal(); });
+        confirmModal.addEventListener('click', (e) => { if (e.target === confirmModal) closeModal(); });
         
-        function populateArticleForm() {
-            const article = isEditingArticle ? (fullData.article || { imageUrls: [''] }) : { imageUrls: [''] };
-            const buttonText = isEditingArticle ? 'Perbarui Berita' : 'Publikasikan';
+        async function populateArticleForm(articleId) {
+            let article = { imageUrls: [''] };
+            let buttonText = 'Publikasikan';
+            let formType = 'article-new';
+
+            if (articleId) {
+                buttonText = 'Perbarui Berita';
+                formType = 'article-update';
+                try {
+                    const response = await fetch(`${GOOGLE_SHEET_WEB_APP_URL}?berita=${articleId}`);
+                    const result = await response.json();
+                    if(result.success) article = result.data.article;
+                    else throw new Error(result.message);
+                } catch(e) {
+                    showNotification('Gagal memuat data berita untuk diedit.', 'error');
+                    return;
+                }
+            }
+            
             let authorInputHtml = '';
             if (isContributorMode) {
                 const savedName = localStorage.getItem('namaPenulis') || '';
                 authorInputHtml = `<div class="form-group"><label for="modalNamaPenulis">Nama Penulis:</label><input type="text" id="modalNamaPenulis" value="${escapeHTML(savedName)}"></div>`;
             }
-            let photoInputsHtml = (article.imageUrls || ['']).map((url, index) => `<div class="ai-prompt-group" style="margin-bottom: 10px;"><input type="url" class="photo-link-input" value="${escapeHTML(url || '')}" placeholder="Link foto ${index + 1}"><button class="btn-update" onclick="removePhotoInput(this)" style="background: #dc3545; width: auto; padding: 8px 10px;">-</button></div>`).join('');
+            let photoInputsHtml = (article.imageUrls && article.imageUrls.length > 0 ? article.imageUrls : ['']).map((url, index) => `<div class="ai-prompt-group" style="margin-bottom: 10px;"><input type="url" class="photo-link-input" value="${escapeHTML(url || '')}" placeholder="Link foto ${index + 1}"><button class="btn-update" onclick="removePhotoInput(this)" style="background: #dc3545; width: auto; padding: 8px 10px;">-</button></div>`).join('');
             modalBody.innerHTML = `
                 <div id="articleNotification" class="notification"></div>
                 ${authorInputHtml}
@@ -261,28 +320,35 @@
                     <div id="photo-inputs-container">${photoInputsHtml}</div>
                     <button class="btn-update" id="add-photo-btn" onclick="addPhotoInput()" style="background: #007bff; font-size: 0.9em; padding: 8px;">+ Tambah Foto</button>
                 </div>
-                <button class="btn-update" onclick="updateArticle(event)"><span class="btn-text">${buttonText}</span><div class="spinner"></div></button>
+                <button class="btn-update" onclick="updateArticle(event, '${formType}')"><span class="btn-text">${buttonText}</span><div class="spinner"></div></button>
             `;
             checkPhotoLimit();
         }
 
         window.addPhotoInput = function() {
-             const container = document.getElementById('photo-inputs-container');
-             if (container.children.length < 4) {
-                 const newIndex = container.children.length + 1;
-                 const newInput = `<div class="ai-prompt-group" style="margin-bottom: 10px;"><input type="url" class="photo-link-input" placeholder="Link foto ${newIndex}"><button class="btn-update" onclick="removePhotoInput(this)" style="background: #dc3545; width: auto; padding: 8px 10px;">-</button></div>`;
-                 container.insertAdjacentHTML('beforeend', newInput);
-             }
-             checkPhotoLimit();
-        };
+            const container = document.getElementById('photo-inputs-container');
+            if (container.children.length < 4) {
+                const newIndex = container.children.length + 1;
+                const newPhotoInput = document.createElement('div');
+                newPhotoInput.className = 'ai-prompt-group';
+                newPhotoInput.style.marginBottom = '10px';
+                newPhotoInput.innerHTML = `<input type="url" class="photo-link-input" placeholder="Link foto ${newIndex}"><button class="btn-update" onclick="removePhotoInput(this)" style="background: #dc3545; width: auto; padding: 8px 10px;">-</button>`;
+                container.appendChild(newPhotoInput);
+            }
+            checkPhotoLimit();
+        }
+
         window.removePhotoInput = function(button) {
-             button.parentElement.remove();
-             checkPhotoLimit();
-        };
+            button.parentElement.remove();
+            checkPhotoLimit();
+        }
+
         function checkPhotoLimit() {
-             const container = document.getElementById('photo-inputs-container');
-             const addButton = document.getElementById('add-photo-btn');
-             addButton.style.display = container.children.length >= 4 ? 'none' : 'block';
+            const container = document.getElementById('photo-inputs-container');
+            const addBtn = document.getElementById('add-photo-btn');
+            if (container && addBtn) {
+                addBtn.style.display = container.children.length >= 4 ? 'none' : 'block';
+            }
         }
 
         function populateSettingsForm() {
@@ -307,54 +373,12 @@
             `;
         }
         
-        // NEW FUNCTION: Converts simple Markdown tables to HTML tables
         function processMarkdownTables(text) {
-            if (!text) return '';
-            const lines = text.split('\n');
-            let html = '';
-            let inTable = false;
-
-            for (let i = 0; i < lines.length; i++) {
-                const line = lines[i].trim();
-                if (line.startsWith('|') && line.endsWith('|')) {
-                    const nextLine = (lines[i + 1] || '').trim();
-                    // Check for header row followed by separator
-                    if (nextLine.startsWith('|') && nextLine.includes('-')) {
-                        inTable = true;
-                        html += '<table>\n<thead>\n<tr>\n';
-                        const headers = line.split('|').slice(1, -1);
-                        headers.forEach(header => {
-                            html += `  <th>${header.trim()}</th>\n`;
-                        });
-                        html += '</tr>\n</thead>\n<tbody>\n';
-                        i++; // Skip separator line
-                        continue;
-                    }
-                    if (inTable) {
-                        html += '<tr>\n';
-                        const cells = line.split('|').slice(1, -1);
-                        cells.forEach(cell => {
-                            html += `  <td>${cell.trim()}</td>\n`;
-                        });
-                        html += '</tr>\n';
-                    } else {
-                        html += `<p>${lines[i]}</p>\n`;
-                    }
-                } else {
-                    if (inTable) {
-                        html += '</tbody>\n</table>\n';
-                        inTable = false;
-                    }
-                    // Prevent adding empty paragraphs for blank lines
-                    if (lines[i].trim() !== '') {
-                         html += `<p>${lines[i]}</p>\n`;
-                    }
-                }
+            if (!text) return '<p></p>';
+            if (!text.includes('|') || !text.includes('-')) {
+                return text.replace(/\n/g, '<br>');
             }
-            if (inTable) {
-                html += '</tbody>\n</table>\n';
-            }
-            return html;
+            return text;
         }
 
         function displayContent(data) {
@@ -375,8 +399,7 @@
             document.getElementById('artikelJudul').innerText = article.title || "Belum Ada Berita";
             
             const teksContainer = document.getElementById('artikelTeks');
-            // MODIFIED: Use the new function to process content
-            teksContainer.innerHTML = article.content ? processMarkdownTables(article.content) : "<p>Silakan masukkan berita pertama.</p>";
+            teksContainer.innerHTML = article.content ? processMarkdownTables(article.content.replace(/<br\s*\/?>/gi, '\n')) : "<p>Silakan masukkan berita pertama.</p>";
 
             const fotoContainer = document.getElementById('foto-container');
             const fotoSampingDiv = fotoContainer.parentElement;
@@ -549,6 +572,45 @@
             }
         };
 
+        async function populateArchiveModal() {
+            modalBody.innerHTML = '<p>Memuat arsip...</p>';
+            try {
+                const response = await fetch(`${GOOGLE_SHEET_WEB_APP_URL}?action=list`);
+                const result = await response.json();
+                if (!result.success) throw new Error(result.message);
+                
+                let archiveHtml = '<div id="archiveNotification" class="notification"></div><ul class="archive-list">';
+                if (result.data.length === 0) {
+                    archiveHtml += '<li>Belum ada berita di arsip.</li>';
+                } else {
+                    result.data.forEach(article => {
+                        archiveHtml += `<li class="archive-item" id="item-${article.id}">
+                            <span>${escapeHTML(article.title)}</span>
+                            <div>
+                                <button class="btn-apply" onclick="openModal('edit-article', '${article.id}')">Edit</button>
+                                <button class="btn-apply" style="background: #c82333;" onclick="deleteArticle('${article.id}', this)">Hapus</button>
+                            </div>
+                        </li>`;
+                    });
+                }
+                archiveHtml += '</ul>';
+                modalBody.innerHTML = archiveHtml;
+            } catch (error) {
+                modalBody.innerHTML = '<p style="color: red;">Gagal memuat arsip.</p>';
+            }
+        }
+
+        window.deleteArticle = async function(articleId, button) {
+            showConfirmModal("Apakah Anda yakin ingin menghapus berita ini secara permanen?", () => {
+                const payload = { type: 'article-delete', articleId: articleId };
+                sendData(payload, button, 'archive', () => {
+                    showNotification("Berita berhasil dihapus!", 'success', 'archive');
+                    const itemToRemove = document.getElementById(`item-${articleId}`);
+                    if (itemToRemove) itemToRemove.remove();
+                });
+            });
+        }
+        
         function updateDOMForKey(key, value) {
             const formatUrl = (url) => {
                 if (!url || typeof url !== 'string' || url.trim() === '') return '#';
@@ -558,8 +620,8 @@
             switch (key) {
                 case 'Nama_Majalah': document.getElementById('namaMajalah').innerText = value; break;
                 case 'Deskripsi_Halaman': document.getElementById('majalahSubtitle').innerText = value; break;
-                case 'Link_Logo_KUA': document.getElementById('logoKuaLink').href = formatUrl(value); document.getElementById('logoKuaImg').src = value || 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs='; break;
-                case 'Link_Logo_Masjid': document.getElementById('logoMasjidLink').href = formatUrl(value); document.getElementById('logoMasjidImg').src = value || 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs='; break;
+                case 'Link_Logo_KUA': document.getElementById('logoKuaLink').href = formatUrl(value); document.getElementById('logoKuaImg').src = value || 'https://via.placeholder.com/150x150.png?text=Logo+KUA'; break;
+                case 'Link_Logo_Masjid': document.getElementById('logoMasjidLink').href = formatUrl(value); document.getElementById('logoMasjidImg').src = value || 'https://via.placeholder.com/150x150.png?text=Logo+Masjid'; break;
                 case 'Medsos': document.querySelector('#footerMedsos a span').innerText = value; break;
                 case 'Link_Facebook': document.querySelector('#footerMedsos a').href = formatUrl(value); break;
                 case 'No_HP': document.getElementById('footerKontak').innerHTML = `<strong>Nomor HP:</strong> ${value}`; break;
@@ -579,7 +641,7 @@
             });
         };
 
-        window.updateArticle = function(event) {
+        window.updateArticle = function(event, formType) {
             const photoInputs = document.querySelectorAll('.photo-link-input');
             const imageUrls = Array.from(photoInputs).map(input => input.value.trim()).filter(url => url);
             
@@ -593,17 +655,31 @@
                 }
             }
 
-            const payload = { type: isEditingArticle ? 'article-update' : 'article-new', articleId: fullData.article?.id, data: {
-                title: document.getElementById('modalJudul').value.trim(),
-                imageUrls: imageUrls,
-                content: content
-            }};
+            const payload = { 
+                type: formType, 
+                articleId: currentArticleIdToEdit, 
+                data: {
+                    title: document.getElementById('modalJudul').value.trim(),
+                    imageUrls: imageUrls,
+                    content: content
+                }
+            };
             
             if (!payload.data.title || !payload.data.content) {
                 showNotification("Harap isi Judul dan Isi Berita.", 'error', 'article');
                 return;
             }
-            sendData(payload, event.currentTarget, 'article');
+            sendData(payload, event.currentTarget, 'article', () => {
+                showNotification("Berita berhasil disimpan!", 'success', 'article');
+                setTimeout(() => { 
+                    closeModal(); 
+                    if(payload.type === 'article-update') {
+                         window.location.href = window.location.origin + window.location.pathname + '?berita=' + payload.articleId;
+                    } else {
+                         window.location.search = '';
+                    }
+                }, 1500);
+            });
         }
         
         function escapeHTML(str) {
@@ -651,7 +727,6 @@
             input.select();
             input.setSelectionRange(0, 99999);
             try {
-                // Use execCommand as a fallback for environments where clipboard API might be restricted
                 document.execCommand('copy');
                 alert('Link berhasil disalin!');
             } catch (err) {
@@ -661,3 +736,4 @@
     </script>
 </body>
 </html>
+
