@@ -75,7 +75,7 @@
         .foto-samping[data-count="2"] a { width: 50%; }
         .foto-samping[data-count="3"] a, .foto-samping[data-count="4"] a { width: 50%; }
         .teks-artikel { text-align: justify; line-height: 1.6; font-size: 1em; }
-        .teks-artikel table { width: 100%; border-collapse: collapse; margin: 1em 0; }
+        .teks-artikel table { width: 100%; border-collapse: collapse; margin: 0.5em 0; }
         .teks-artikel th, .teks-artikel td { border: 1px solid #ddd; padding: 8px; text-align: left; }
         .teks-artikel th { background-color: #f2f2f2; }
         footer { background-color: var(--warna-utama); color: #ffffff; padding: 15px 0; text-align: center; }
@@ -200,23 +200,18 @@
         const modalBody = document.getElementById('modalBody');
         const shareModal = document.getElementById('shareModal');
 
-        function openModal(type) {
+        function openModal(type, articleId = null) {
             if (type === 'share') {
-                const articleId = fullData.article?.id;
-                if (articleId) {
-                    document.getElementById('share-link-public').value = `${window.location.origin}${window.location.pathname}?berita=${articleId}&view=public`;
+                const idToShare = fullData.article?.id;
+                if (idToShare) {
+                    document.getElementById('share-link-public').value = `${window.location.origin}${window.location.pathname}?berita=${idToShare}&view=public`;
                     document.getElementById('share-link-contributor').value = `${window.location.origin}${window.location.pathname}?mode=kontributor`;
                     shareModal.style.display = 'flex';
                 } else { alert("Tidak ada berita untuk dibagikan."); }
             } else {
-                if (type === 'new-article' || type === 'edit-article') {
-                    isEditingArticle = type === 'edit-article';
-                    modalTitle.innerText = isEditingArticle ? 'Edit Berita Terakhir' : 'Tulis Berita Baru';
-                    populateArticleForm(fullData.article?.id);
-                } else if (type === 'settings') {
-                    modalTitle.innerText = 'Edit Pengaturan Umum';
-                    populateSettingsForm();
-                }
+                if (type === 'new-article') { isEditingArticle = false; modalTitle.innerText = 'Tulis Berita Baru'; populateArticleForm(); }
+                else if (type === 'edit-article') { isEditingArticle = true; modalTitle.innerText = 'Edit Berita Terakhir'; populateArticleForm(fullData.article?.id); }
+                else if (type === 'settings') { modalTitle.innerText = 'Edit Pengaturan Umum'; populateSettingsForm(); }
                 modal.style.display = 'flex';
             }
         }
