@@ -204,7 +204,7 @@
                 if (type === 'new-article' || type === 'edit-article') {
                     isEditingArticle = type === 'edit-article';
                     modalTitle.innerText = isEditingArticle ? 'Edit Berita Terakhir' : 'Tulis Berita Baru';
-                    populateArticleForm();
+                    populateArticleForm(fullData.article?.id);
                 } else if (type === 'settings') {
                     modalTitle.innerText = 'Edit Pengaturan Umum';
                     populateSettingsForm();
@@ -230,7 +230,7 @@
         }
 
         document.getElementById('btn-new-article').addEventListener('click', () => openModal('new-article'));
-        document.getElementById('btn-edit-last-article').addEventListener('click', () => openModal('edit-article'));
+        document.getElementById('btn-edit-last-article').addEventListener('click', () => openModal('edit-article', fullData.article?.id));
         document.getElementById('btn-edit-pengaturan').addEventListener('click', () => openModal('settings'));
         document.getElementById('btn-share').addEventListener('click', () => openModal('share'));
         document.getElementById('modalClose').addEventListener('click', closeModal);
