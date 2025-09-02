@@ -6,8 +6,8 @@
     <title>Majalah Digital Interaktif</title>
     <meta name="description" content="Baca berita dan informasi terkini yang disajikan secara dinamis.">
     <meta property="og:title" content="Majalah Digital Interaktif" />
-    <meta property="og:description" content="Baca berita dan informasi terkini yang disajikan secara dinamis." />
-    <meta property="og:image" content="https://via.placeholder.com/1200x630.png?text=Majalah+Digital" />
+    <meta property="og:description" content="Baca berita dan informasi terkini dari komunitas kami." />
+    <meta property="og:image" content="https://placehold.co/1200x630/1b5e20/ffffff?text=Majalah+Digital" />
     <meta property="og:url" content="" />
     <meta property="og:type" content="article" />
     <meta property="twitter:card" content="summary_large_image" />
@@ -64,10 +64,10 @@
         .title-container { flex-grow: 1; text-align: center; min-width: 0; padding: 0 15px; }
         header h1 { font-size: clamp(1.5em, 4vw, 2.2em); color: var(--warna-utama); margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .magazine-subtitle { font-size: 0.8em; font-style: italic; color: #555; margin: 4px 0 0 0; line-height: 1.3; }
-        main { padding: 22px; } /* Dipersempit */
+        main { padding: 22px; }
         article .judul-artikel { font-size: clamp(1.8em, 5vw, 2.2em); margin-top: 0; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px; color: #388e3c; }
         .artikel-container::after { content: ""; clear: both; display: table; }
-        .foto-samping { float: left; width: 45%; max-width: 320px; margin-right: 15px; margin-bottom: 10px; } /* Dipersempit */
+        .foto-samping { float: left; width: 45%; max-width: 320px; margin-right: 15px; margin-bottom: 10px; }
         .foto-samping-inner { display: flex; flex-wrap: wrap; }
         .foto-samping-inner a { display: block; box-sizing: border-box; padding: 0; }
         .foto-samping-inner img { width: 100%; height: 100%; object-fit: cover; display: block; }
@@ -75,9 +75,10 @@
         .foto-samping[data-count="2"] a { width: 50%; }
         .foto-samping[data-count="3"] a, .foto-samping[data-count="4"] a { width: 50%; }
         .teks-artikel { text-align: justify; line-height: 1.6; font-size: 1em; }
-        .teks-artikel table { width: 100%; border-collapse: collapse; margin: 0.5em 0; }
+        .teks-artikel table { width: 100%; border-collapse: collapse; margin: 0.5em 0; font-size: 0.9em; white-space: normal; }
         .teks-artikel th, .teks-artikel td { border: 1px solid #ddd; padding: 8px; text-align: left; }
         .teks-artikel th { background-color: #f2f2f2; }
+        .teks-artikel tr:nth-child(even) { background-color: #f9f9f9; }
         footer { background-color: var(--warna-utama); color: #ffffff; padding: 15px 0; text-align: center; }
         .footer-content { display: flex; flex-direction: column; gap: 15px; }
         .footer-content-inner { display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; gap: 15px; font-size: 0.9em; padding: 0 15px; }
@@ -105,7 +106,8 @@
             .footer-content { gap: 10px; padding-bottom: 0; }
             .footer-content-inner { font-size: 0.75em; }
             .teks-artikel { font-size: 1.1em; }
-            .foto-samping { float: none; width: 100%; margin-right: 0; }
+            .foto-samping[data-count="1"] { float: left; width: 45%; margin-right: 15px; }
+            .foto-samping[data-count="2"], .foto-samping[data-count="3"], .foto-samping[data-count="4"] { float: none; width: 100%; margin-right: 0; }
             footer { position: fixed; bottom: 0; left: 0; width: 100%; z-index: 999; box-shadow: 0 -3px 10px rgba(0,0,0,0.15); box-sizing: border-box; }
             .read-more-mobile { display: block; position: fixed; bottom: 120px; left: 0; width: 100%; padding: 30px 0 10px 0; background: linear-gradient(to bottom, transparent, #f8f9fa 50%); text-align: center; color: var(--warna-utama); font-weight: bold; font-style: italic; z-index: 998; pointer-events: none; }
         }
@@ -197,7 +199,7 @@
             if (type === 'share') {
                 const idToShare = fullData.article?.id;
                 if (idToShare) {
-                    document.getElementById('share-link-public').value = `${window.location.origin}${window.location.pathname}?berita=${idToShare}&view=public`;
+                    document.getElementById('share-link-input').value = `${window.location.origin}${window.location.pathname}?berita=${idToShare}&view=public`;
                     shareModal.style.display = 'flex';
                 } else { alert("Tidak ada berita untuk dibagikan."); }
             } else {
@@ -308,7 +310,7 @@
             document.getElementById('artikelJudul').innerText = article.title || "Belum Ada Berita";
             
             const teksContainer = document.getElementById('artikelTeks');
-            teksContainer.innerHTML = article.content ? article.content.replace(/\n/g, '<br>') : "<p>Silakan masukkan berita pertama.</p>";
+            teksContainer.innerHTML = article.content ? article.content : "<p>Silakan masukkan berita pertama.</p>";
 
             const fotoContainer = document.getElementById('foto-container');
             const fotoSampingDiv = fotoContainer.parentElement;
@@ -521,7 +523,7 @@
                 if (authorInput && authorInput.value.trim() !== '') {
                     const authorName = authorInput.value.trim();
                     localStorage.setItem('namaPenulis', authorName);
-                    content += `\n\n(Kontributor: ${authorName})`;
+                    content += `\n\n(Penulis: ${authorName})`;
                 }
             }
 
@@ -570,7 +572,7 @@
             const adminPanel = document.getElementById('admin-panel');
             if (params.get('view') === 'public') {
                 adminPanel.style.display = 'none';
-            } else if (params.get('mode') === 'kontributor') {
+            } else if (params.get('mode') === 'penulis') {
                 isContributorMode = true;
                 adminPanel.innerHTML = '<button id="btn-new-article" class="admin-btn" style="background-color: var(--warna-utama); color: white;">Tulis Berita Baru</button>';
                 document.getElementById('btn-new-article').addEventListener('click', () => openModal('new-article'));
