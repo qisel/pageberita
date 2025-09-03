@@ -79,6 +79,7 @@
         .teks-artikel th, .teks-artikel td { border: 1px solid #ddd; padding: 8px; text-align: left; }
         .teks-artikel th { background-color: #f2f2f2; }
         .teks-artikel tr:nth-child(even) { background-color: #f9f9f9; }
+        .teks-artikel > p { margin: 0 0 1em 0; }
         footer { background-color: var(--warna-utama); color: #ffffff; padding: 15px 0; text-align: center; }
         .footer-content { display: flex; flex-direction: column; gap: 15px; }
         .footer-content-inner { display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; gap: 15px; font-size: 0.9em; padding: 0 15px; }
@@ -391,7 +392,7 @@
             document.getElementById('artikelJudul').innerText = article.title || "Belum Ada Berita";
             
             const teksContainer = document.getElementById('artikelTeks');
-            teksContainer.innerHTML = article.content ? article.content.replace(/\n/g, '<br>') : "<p>Silakan masukkan berita pertama.</p>";
+            teksContainer.innerHTML = article.content ? article.content.replace(/<br\s*\/?>/gi, '\n').replace(/\n/g, '<br>') : "<p>Silakan masukkan berita pertama.</p>";
 
             const fotoContainer = document.getElementById('foto-container');
             const fotoSampingDiv = fotoContainer.parentElement;
@@ -532,7 +533,7 @@
                 });
                 if (!response.ok) throw new Error(`API request failed with status ${response.status}`);
                 const result = await response.json();
-                if (!result.success) throw new Error(result.message || 'Unknown error from backend');
+                if (!result.success) throw new Error(result.message);
 
                 const candidate = result.data.candidates?.[0];
                 let generatedText = candidate?.content?.parts?.[0]?.text;
