@@ -111,7 +111,8 @@
             .footer-content { gap: 10px; padding-bottom: 0; }
             .footer-content-inner { font-size: 0.75em; }
             .teks-artikel { font-size: 1.1em; }
-            .foto-samping { float: none; width: 100%; margin-right: 0; }
+            .foto-samping[data-count="1"] { float: left; width: 45%; margin-right: 15px; }
+            .foto-samping[data-count="2"], .foto-samping[data-count="3"], .foto-samping[data-count="4"] { float: none; width: 100%; margin-right: 0; }
             footer { position: fixed; bottom: 0; left: 0; width: 100%; z-index: 999; box-shadow: 0 -3px 10px rgba(0,0,0,0.15); box-sizing: border-box; }
             .read-more-mobile { display: block; position: fixed; bottom: 120px; left: 0; width: 100%; padding: 30px 0 10px 0; background: linear-gradient(to bottom, transparent, #f8f9fa 50%); text-align: center; color: var(--warna-utama); font-weight: bold; font-style: italic; z-index: 998; pointer-events: none; }
         }
@@ -392,7 +393,7 @@
             document.getElementById('artikelJudul').innerText = article.title || "Belum Ada Berita";
             
             const teksContainer = document.getElementById('artikelTeks');
-            teksContainer.innerHTML = article.content ? article.content.replace(/\n/g, '<br>') : "<p>Silakan masukkan berita pertama.</p>";
+            teksContainer.innerHTML = article.content || "<p>Silakan masukkan berita pertama.</p>";
 
             const fotoContainer = document.getElementById('foto-container');
             const fotoSampingDiv = fotoContainer.parentElement;
@@ -580,7 +581,7 @@
                         archiveHtml += `<li class="archive-item" id="item-${article.id}">
                             <span>${escapeHTML(article.title)}</span>
                             <div>
-                                <button class="btn-apply" onclick="window.location.href=window.location.origin + window.location.pathname + '?berita=${article.id}'; closeModal();">Lihat</button>
+                                <button class="btn-apply" onclick="window.location.href='?berita=${article.id}'; closeModal();">Lihat</button>
                                 <button class="btn-apply" onclick="openModal('edit-article', '${article.id}')">Edit</button>
                                 <button class="btn-apply" style="background: #c82333;" onclick="deleteArticle('${article.id}', this)">Hapus</button>
                             </div>
@@ -599,7 +600,7 @@
                 const payload = { type: 'article-delete', articleId: articleId };
                 sendData(payload, button, 'archive', () => {
                     showNotification("Berita berhasil dihapus!", 'success', 'archive');
-                    const itemToRemove = document.getElementById(`item-${articleId}`);
+                    const itemToRemove = document.getElementById(`item-${article.id}`);
                     if (itemToRemove) itemToRemove.remove();
                 });
             });
@@ -670,7 +671,7 @@
                     if(payload.type === 'article-update') {
                          window.location.href = window.location.origin + window.location.pathname + '?berita=' + payload.articleId;
                     } else {
-                         window.location.href = window.location.origin + window.location.pathname;
+                         window.location.search = '';
                     }
                 }, 1500);
             });
