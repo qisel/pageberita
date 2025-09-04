@@ -74,7 +74,18 @@
         .foto-samping[data-count="1"] a { width: 100%; }
         .foto-samping[data-count="2"] a { width: 50%; }
         .foto-samping[data-count="3"] a, .foto-samping[data-count="4"] a { width: 50%; }
-        .teks-artikel { text-align: justify; line-height: 1.6; font-size: 1em; }
+        
+        .teks-artikel {
+            text-align: justify;
+            line-height: 1.6;
+            font-size: 1em;
+            
+            /* PERBAIKAN FINAL UNTUK ALUR TEKS DAN PEMENGGALAN KATA */
+            overflow: hidden; 
+            overflow-wrap: break-word; 
+            hyphens: auto; 
+        }
+
         .teks-artikel table { width: 100%; border-collapse: collapse; margin: 1em 0; font-size: 0.9em; white-space: normal; }
         .teks-artikel th, .teks-artikel td { border: 1px solid #ddd; padding: 8px; text-align: left; }
         .teks-artikel th { background-color: #f2f2f2; }
