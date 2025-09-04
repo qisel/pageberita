@@ -98,6 +98,7 @@
             body { padding-top: 85px; padding-bottom: 140px; overflow-x: hidden; }
             header { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
             footer { position: fixed; bottom: 0; left: 0; width: 100%; z-index: 999; }
+            .header-inner, .footer-inner { max-width: 100%; }
             .header-inner { padding: 10px 15px; }
             header h1 { padding: 0 10px; font-size: clamp(1.8em, 7vw, 2.8em); }
             .magazine-subtitle { font-size: 0.7em; }
@@ -392,7 +393,7 @@
             document.getElementById('artikelJudul').innerText = article.title || "Belum Ada Berita";
             
             const teksContainer = document.getElementById('artikelTeks');
-            teksContainer.innerHTML = article.content ? article.content.replace(/\n/g, '<br>') : "<p>Silakan masukkan berita pertama.</p>";
+            teksContainer.innerHTML = article.content ? article.content : "<p>Silakan masukkan berita pertama.</p>";
 
             const fotoContainer = document.getElementById('foto-container');
             const fotoSampingDiv = fotoContainer.parentElement;
@@ -670,7 +671,7 @@
                     if(payload.type === 'article-update') {
                          window.location.href = window.location.origin + window.location.pathname + '?berita=' + payload.articleId;
                     } else {
-                         window.location.href = window.location.origin + window.location.pathname;
+                         window.location.search = '';
                     }
                 }, 1500);
             });
