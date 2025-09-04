@@ -89,8 +89,13 @@
         .archive-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #ddd; }
         .archive-item span { flex-grow: 1; margin-right: 10px; }
         .archive-item button { font-size: 0.8em; padding: 4px 8px; }
+        
+        @media (min-width: 651px) {
+            body { padding: 0; }
+        }
+
         @media (max-width: 650px) { 
-            body { padding-top: 85px; padding-bottom: 140px; }
+            body { padding-top: 85px; padding-bottom: 140px; overflow-x: hidden; }
             header { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
             footer { position: fixed; bottom: 0; left: 0; width: 100%; z-index: 999; }
             .header-inner { padding: 10px 15px; }
@@ -379,10 +384,15 @@
                 return `https://${url}`;
             };
             document.title = article.title || settings.Nama_Majalah || "Majalah Digital";
-            document.querySelector('meta[name="description"]').setAttribute("content", (article.content || "Baca berita terkini").substring(0, 155));
-            document.querySelector('meta[property="og:title"]').setAttribute("content", article.title || settings.Nama_Majalah || "Majalah Digital");
-            document.querySelector('meta[property="og:description"]').setAttribute("content", (article.content || "Baca berita terkini").substring(0, 155));
-            document.querySelector('meta[property="og:image"]').setAttribute("content", article.imageUrls?.[0] || 'https://via.placeholder.com/1200x630.png?text=Majalah+Digital');
+            
+            const metaDescription = document.querySelector('meta[name="description"]');
+            if(metaDescription) metaDescription.setAttribute("content", (article.content || "Baca berita terkini").substring(0, 155));
+            const ogTitle = document.querySelector('meta[property="og:title"]');
+            if(ogTitle) ogTitle.setAttribute("content", article.title || settings.Nama_Majalah || "Majalah Digital");
+            const ogDescription = document.querySelector('meta[property="og:description"]');
+            if(ogDescription) ogDescription.setAttribute("content", (article.content || "Baca berita terkini").substring(0, 155));
+            const ogImage = document.querySelector('meta[property="og:image"]');
+            if(ogImage) ogImage.setAttribute("content", article.imageUrls?.[0] || 'https://via.placeholder.com/1200x630.png?text=Majalah+Digital');
             
             document.getElementById('artikelJudul').innerText = article.title || "Belum Ada Berita";
             
@@ -665,7 +675,7 @@
                     if(payload.type === 'article-update') {
                          window.location.href = window.location.origin + window.location.pathname + '?berita=' + payload.articleId;
                     } else {
-                         window.location.search = '';
+                         window.location.href = window.location.origin + window.location.pathname;
                     }
                 }, 1500);
             });
