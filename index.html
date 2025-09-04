@@ -58,16 +58,12 @@
         .foto-samping[data-count="1"] a { width: 100%; }
         .foto-samping[data-count="2"] a { width: 50%; }
         .foto-samping[data-count="3"] a, .foto-samping[data-count="4"] a { width: 50%; }
-        .teks-artikel { text-align: justify; line-height: 1.6; font-size: 1em; position: relative; }
-        .konten-terpotong { max-height: 250px; overflow: hidden; position: relative; padding-bottom: 30px; }
-        .konten-terpotong::after { content: ''; position: absolute; bottom: 30px; left: 0; width: 100%; height: 50px; background: linear-gradient(to bottom, transparent, white); }
-        .baca-selengkapnya-btn { display: none; margin: -20px auto 20px auto; padding: 8px 20px; border: 1px solid var(--warna-utama); background-color: white; color: var(--warna-utama); font-weight: bold; border-radius: 20px; cursor: pointer; transition: all 0.3s ease; }
-        .baca-selengkapnya-btn:hover { background-color: var(--warna-utama); color: white; }
+        .teks-artikel { text-align: justify; line-height: 1.6; font-size: 1em; }
         .teks-artikel table { width: 100%; border-collapse: collapse; margin: 1em 0; font-size: 0.9em; white-space: normal; }
         .teks-artikel th, .teks-artikel td { border: 1px solid #ddd; padding: 8px; text-align: left; }
         .teks-artikel th { background-color: #f2f2f2; }
         .teks-artikel tr:nth-child(even) { background-color: #f9f9f9; }
-        .teks-artikel > p { margin: 0 0 1em 0; }
+        .teks-artikel > p { margin: 0 0 1em 0; } 
         
         .footer-inner { max-width: 800px; margin: 0 auto; }
         footer { background-color: var(--warna-utama); color: #ffffff; }
@@ -105,8 +101,7 @@
             .footer-content { gap: 10px; }
             .footer-content-inner { font-size: 0.75em; }
             .teks-artikel { font-size: 1.1em; }
-            .foto-samping[data-count="1"] { float: left; width: 45%; margin-right: 15px; }
-            .foto-samping[data-count="2"], .foto-samping[data-count="3"], .foto-samping[data-count="4"] { float: none; width: 100%; margin-right: 0; }
+            .foto-samping { float: none; width: 100%; margin-right: 0; }
         }
     </style>
 </head>
@@ -384,20 +379,15 @@
                 return `https://${url}`;
             };
             document.title = article.title || settings.Nama_Majalah || "Majalah Digital";
-            
-            const metaDescription = document.querySelector('meta[name="description"]');
-            if(metaDescription) metaDescription.setAttribute("content", (article.content || "Baca berita terkini").substring(0, 155));
-            const ogTitle = document.querySelector('meta[property="og:title"]');
-            if(ogTitle) ogTitle.setAttribute("content", article.title || settings.Nama_Majalah || "Majalah Digital");
-            const ogDescription = document.querySelector('meta[property="og:description"]');
-            if(ogDescription) ogDescription.setAttribute("content", (article.content || "Baca berita terkini").substring(0, 155));
-            const ogImage = document.querySelector('meta[property="og:image"]');
-            if(ogImage) ogImage.setAttribute("content", article.imageUrls?.[0] || 'https://via.placeholder.com/1200x630.png?text=Majalah+Digital');
+            document.querySelector('meta[name="description"]').setAttribute("content", (article.content || "Baca berita terkini").substring(0, 155));
+            document.querySelector('meta[property="og:title"]').setAttribute("content", article.title || settings.Nama_Majalah || "Majalah Digital");
+            document.querySelector('meta[property="og:description"]').setAttribute("content", (article.content || "Baca berita terkini").substring(0, 155));
+            document.querySelector('meta[property="og:image"]').setAttribute("content", article.imageUrls?.[0] || 'https://via.placeholder.com/1200x630.png?text=Majalah+Digital');
             
             document.getElementById('artikelJudul').innerText = article.title || "Belum Ada Berita";
             
             const teksContainer = document.getElementById('artikelTeks');
-            teksContainer.innerHTML = article.content ? article.content.replace(/\n/g, '<br>') : "<p>Silakan masukkan berita pertama.</p>";
+            teksContainer.innerHTML = article.content || "<p>Silakan masukkan berita pertama.</p>";
 
             const fotoContainer = document.getElementById('foto-container');
             const fotoSampingDiv = fotoContainer.parentElement;
