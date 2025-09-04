@@ -95,7 +95,6 @@
         @keyframes skeleton-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
         .skeleton-text { height: 1em; background-color: #e0e0e0; border-radius: 4px; }
         .skeleton-img { background-color: #e0e0e0; }
-        .read-more-mobile { display: none; }
         .archive-list { list-style: none; padding: 0; }
         .archive-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #ddd; }
         .archive-item span { flex-grow: 1; margin-right: 10px; }
@@ -112,17 +111,14 @@
             .footer-content-inner { font-size: 0.75em; }
             .teks-artikel { 
                 font-size: 1.1em;
-                /* PERUBAHAN CSS: Batasi tinggi awal artikel */
                 max-height: 300px; 
                 overflow: hidden;
                 position: relative;
                 transition: max-height 0.5s ease-in-out;
             }
-            /* PERUBAHAN CSS: Kelas baru untuk mode artikel terbuka penuh */
             .teks-artikel.expanded {
-                max-height: 5000px; /* Nilai besar untuk menampung semua teks */
+                max-height: 5000px; 
             }
-            /* PERUBAHAN CSS: Gaya baru untuk tombol */
             .read-more-btn {
                 display: block;
                 width: 100%;
@@ -399,16 +395,22 @@
             `;
         }
         
-        // PERUBAHAN JAVASCRIPT: Fungsi baru untuk "Baca Selengkapnya"
         function setupReadMore() {
             if (window.innerWidth > 650) return;
 
             const teksArtikel = document.getElementById('artikelTeks');
             const btnReadMore = document.getElementById('btn-baca-selengkapnya');
+            
+            if (!teksArtikel || !btnReadMore) {
+                console.error("Elemen artikel atau tombol tidak ditemukan.");
+                return;
+            }
 
-            if (teksArtikel.scrollHeight > 300) { 
-                btnReadMore.style.display = 'block'; 
+            teksArtikel.classList.remove('expanded');
+            btnReadMore.style.display = 'none';
+            btnReadMore.textContent = 'Baca Selengkapnya';
 
+            if (!btnReadMore.hasAttribute('data-listener-attached')) {
                 btnReadMore.addEventListener('click', () => {
                     teksArtikel.classList.toggle('expanded');
                     if (teksArtikel.classList.contains('expanded')) {
@@ -417,9 +419,14 @@
                         btnReadMore.textContent = 'Baca Selengkapnya';
                     }
                 });
-            } else {
-                btnReadMore.style.display = 'none'; 
+                btnReadMore.setAttribute('data-listener-attached', 'true');
             }
+
+            setTimeout(() => {
+                if (teksArtikel.scrollHeight > 300) {
+                    btnReadMore.style.display = 'block';
+                }
+            }, 100); 
         }
 
         function displayContent(data) {
@@ -495,7 +502,6 @@
             }
             
             setupClickTrackers();
-            // PERUBAHAN JAVASCRIPT: Memanggil fungsi baru di akhir displayContent
             setupReadMore();
         }
         
