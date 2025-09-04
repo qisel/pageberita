@@ -58,11 +58,7 @@
         .foto-samping[data-count="1"] a { width: 100%; }
         .foto-samping[data-count="2"] a { width: 50%; }
         .foto-samping[data-count="3"] a, .foto-samping[data-count="4"] a { width: 50%; }
-        .teks-artikel { text-align: justify; line-height: 1.6; font-size: 1em; position: relative; }
-        .konten-terpotong { max-height: 250px; overflow: hidden; position: relative; padding-bottom: 30px; }
-        .konten-terpotong::after { content: ''; position: absolute; bottom: 30px; left: 0; width: 100%; height: 50px; background: linear-gradient(to bottom, transparent, white); }
-        .baca-selengkapnya-btn { display: none; margin: -20px auto 20px auto; padding: 8px 20px; border: 1px solid var(--warna-utama); background-color: white; color: var(--warna-utama); font-weight: bold; border-radius: 20px; cursor: pointer; transition: all 0.3s ease; }
-        .baca-selengkapnya-btn:hover { background-color: var(--warna-utama); color: white; }
+        .teks-artikel { text-align: justify; line-height: 1.6; font-size: 1em; }
         .teks-artikel table { width: 100%; border-collapse: collapse; margin: 1em 0; font-size: 0.9em; white-space: normal; }
         .teks-artikel th, .teks-artikel td { border: 1px solid #ddd; padding: 8px; text-align: left; }
         .teks-artikel th { background-color: #f2f2f2; }
@@ -70,9 +66,9 @@
         .teks-artikel > p { margin: 0 0 1em 0; }
         
         .footer-inner { max-width: 800px; margin: 0 auto; }
-        footer { background-color: var(--warna-utama); color: #ffffff; }
-        .footer-content { display: flex; flex-direction: column; gap: 15px; padding-top: 15px; }
-        .footer-content-inner { display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; gap: 15px; font-size: 0.9em; padding: 0 15px; }
+        footer { background-color: var(--warna-utama); color: #ffffff; padding-top: 15px; }
+        .footer-content { display: flex; flex-direction: column; gap: 15px; }
+        .footer-content-inner { display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; gap: 15px; font-size: 0.9em; padding: 0 15px 15px 15px; }
         #footerMedsos a { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; color: white; transition: opacity 0.3s; }
         #footerMedsos a:hover { opacity: 0.8; }
         .news-ticker-wrap { width: 100%; background-color: rgba(0,0,0,0.2); padding: 8px 0; overflow: hidden; white-space: nowrap; }
@@ -85,29 +81,26 @@
         @keyframes skeleton-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
         .skeleton-text { height: 1em; background-color: #e0e0e0; border-radius: 4px; }
         .skeleton-img { background-color: #e0e0e0; }
+        .read-more-mobile { display: none; }
         .archive-list { list-style: none; padding: 0; }
         .archive-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #ddd; }
         .archive-item span { flex-grow: 1; margin-right: 10px; }
         .archive-item button { font-size: 0.8em; padding: 4px 8px; }
         
-        @media (min-width: 651px) {
-            body { padding: 0; }
-        }
-
         @media (max-width: 650px) { 
-            body { padding-top: 85px; padding-bottom: 140px; overflow-x: hidden; }
-            header { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-            footer { position: fixed; bottom: 0; left: 0; width: 100%; z-index: 999; }
-            .header-inner, .footer-inner { max-width: 100%; }
+            body { padding-bottom: 120px; }
+            main { padding: 15px; }
             .header-inner { padding: 10px 15px; }
             header h1 { padding: 0 10px; font-size: clamp(1.8em, 7vw, 2.8em); }
             .magazine-subtitle { font-size: 0.7em; }
             article .judul-artikel { font-size: 1.4em; }
+            footer { position: fixed; bottom: 0; left: 0; width: 100%; z-index: 999; }
             .footer-content { gap: 10px; }
             .footer-content-inner { font-size: 0.75em; }
             .teks-artikel { font-size: 1.1em; }
             .foto-samping[data-count="1"] { float: left; width: 45%; margin-right: 15px; }
             .foto-samping[data-count="2"], .foto-samping[data-count="3"], .foto-samping[data-count="4"] { float: none; width: 100%; margin-right: 0; }
+            .read-more-mobile { display: block; position: fixed; bottom: 120px; left: 0; width: 100%; padding: 30px 0 10px 0; background: linear-gradient(to bottom, transparent, #f8f9fa 50%); text-align: center; color: var(--warna-utama); font-weight: bold; font-style: italic; z-index: 998; pointer-events: none; }
         }
     </style>
 </head>
@@ -163,47 +156,46 @@
         </div>
     </div>
 
-    <header>
-        <div class="header-inner">
-            <div class="logo logo-kua"><a id="logoKuaLink" href="#" target="_blank"><img id="logoKuaImg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Logo KUA"></a></div>
-            <div class="title-container">
-                <h1 id="namaMajalah"></h1>
-                <p id="majalahSubtitle" class="magazine-subtitle"></p>
-            </div>
-            <div class="logo logo-masjid"><a id="logoMasjidLink" href="#" target="_blank"><img id="logoMasjidImg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Logo Masjid"></a></div>
-        </div>
-    </header>
-
     <div id="majalah-wrapper" style="display:none; opacity:0;">
+        <header>
+            <div class="header-inner">
+                <div class="logo logo-kua"><a id="logoKuaLink" href="#" target="_blank"><img id="logoKuaImg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Logo KUA"></a></div>
+                <div class="title-container">
+                    <h1 id="namaMajalah"></h1>
+                    <p id="majalahSubtitle" class="magazine-subtitle"></p>
+                </div>
+                <div class="logo logo-masjid"><a id="logoMasjidLink" href="#" target="_blank"><img id="logoMasjidImg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Logo Masjid"></a></div>
+            </div>
+        </header>
+        
         <div class="container-majalah">
             <main>
                 <article>
                     <h2 class="judul-artikel" id="artikelJudul"></h2>
                     <div class="artikel-container">
                         <div class="foto-samping"><div class="foto-samping-inner" id="foto-container"></div></div>
-                        <div id="artikelTeksWrapper">
-                            <div class="teks-artikel" id="artikelTeks"></div>
-                        </div>
+                        <div class="teks-artikel" id="artikelTeks"></div>
                     </div>
                 </article>
+                <div class="read-more-mobile">...baca selengkapnya</div>
             </main>
         </div>
-    </div>
-    
-    <footer>
-        <div class="footer-inner">
-            <div class="footer-content">
-                <div class="news-ticker-wrap">
-                    <div class="news-ticker" id="news-ticker"></div>
-                </div>
-                <div class="footer-content-inner">
-                    <div id="footerMedsos"></div>
-                    <div id="footerKontak"></div>
-                    <div id="footerAlamat"></div>
+        
+        <footer>
+            <div class="footer-inner">
+                <div class="footer-content">
+                    <div class="news-ticker-wrap">
+                        <div class="news-ticker" id="news-ticker"></div>
+                    </div>
+                    <div class="footer-content-inner">
+                        <div id="footerMedsos"></div>
+                        <div id="footerKontak"></div>
+                        <div id="footerAlamat"></div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </footer>
+        </footer>
+    </div>
 
     <div id="skeleton-loader"><div class="container-majalah"><header class="skeleton"><div style="height: 120px;"></div></header><main><div class="judul-artikel skeleton skeleton-text" style="height: 2.2em; width: 80%; margin-bottom: 20px;"></div><div class="artikel-container"><div class="foto-samping skeleton skeleton-img" style="height: 250px;"></div><div class="teks-artikel"><p class="skeleton skeleton-text"></p><p class="skeleton skeleton-text"></p><p class="skeleton skeleton-text"></p></div></div></main><footer class="skeleton"><div style="height: 100px;"></div></footer></div></div>
     <div id="error-container" style="display: none; max-width: 800px; margin: 20px auto; padding: 20px; background-color: #f8d7da; border: 1px solid #f5c6cb; border-radius: 8px; color: #721c24;"><h2>Masalah Kritis</h2><p id="error-message"></p><p>Periksa kembali panduan penyiapan Google Sheets Anda.</p></div>
@@ -393,7 +385,7 @@
             document.getElementById('artikelJudul').innerText = article.title || "Belum Ada Berita";
             
             const teksContainer = document.getElementById('artikelTeks');
-            teksContainer.innerHTML = article.content ? article.content : "<p>Silakan masukkan berita pertama.</p>";
+            teksContainer.innerHTML = article.content ? article.content.replace(/\n/g, '<br>') : "<p>Silakan masukkan berita pertama.</p>";
 
             const fotoContainer = document.getElementById('foto-container');
             const fotoSampingDiv = fotoContainer.parentElement;
@@ -671,7 +663,7 @@
                     if(payload.type === 'article-update') {
                          window.location.href = window.location.origin + window.location.pathname + '?berita=' + payload.articleId;
                     } else {
-                         window.location.search = '';
+                         window.location.href = window.location.origin + window.location.pathname;
                     }
                 }, 1500);
             });
