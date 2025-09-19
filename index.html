@@ -112,6 +112,7 @@
         .archive-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #ddd; }
         .archive-item span { flex-grow: 1; margin-right: 10px; }
         .archive-item button { font-size: 0.8em; padding: 4px 8px; }
+
         @media (max-width: 650px) { 
             body { padding: 0; padding-bottom: 120px; }
             .admin-controls { margin: 0; border-radius: 0; border-left: none; border-right: none; padding: 15px 10px; } 
@@ -146,8 +147,9 @@
                 border-radius: 5px;
                 margin-top: 15px;
             }
-            .foto-samping[data-count="1"] { float: left; width: 45%; margin-right: 15px; }
-            .foto-samping[data-count="2"], .foto-samping[data-count="3"], .foto-samping[data-count="4"] { float: none; width: 100%; margin-right: 0; }
+            
+            /* PERUBAHAN FINAL: Menghapus aturan foto khusus mobile agar sama seperti desktop */
+
             footer { position: fixed; bottom: 0; left: 0; width: 100%; z-index: 999; box-shadow: 0 -3px 10px rgba(0,0,0,0.15); box-sizing: border-box; }
         }
     </style>
@@ -672,7 +674,7 @@
                 const payload = { type: 'article-delete', articleId: articleId };
                 sendData(payload, button, 'archive', () => {
                     showNotification("Berita berhasil dihapus!", 'success', 'archive');
-                    const itemToRemove = document.getElementById(`item-${article.id}`);
+                    const itemToRemove = document.getElementById(`item-${articleId}`);
                     if (itemToRemove) itemToRemove.remove();
                 });
             });
