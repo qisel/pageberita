@@ -14,8 +14,19 @@
     <style>
         :root { --warna-utama: #1b5e20; --warna-aksen: #ffc107; }
         html, body { height: 100%; margin: 0; }
-        body { font-family: 'Georgia', 'Times New Roman', Times, serif; padding: 0; background-color: #f8f9fa; color: #333; }
-        .admin-controls { max-width: 800px; margin: 20px auto; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; padding: 10px; border-radius: 12px; background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        
+        body { 
+            font-family: 'Georgia', 'Times New Roman', Times, serif; 
+            padding: 0; 
+            background-color: #f8f9fa; 
+            color: #333; 
+            display: flex; 
+            flex-direction: column; 
+            height: 100vh; 
+        }
+
+        /* Kontrol Admin & Modal (tidak berubah banyak) */
+        .admin-controls { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; padding: 10px; background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 4px 15px rgba(0,0,0,0.1); flex-shrink: 0; margin: 0; border-radius: 0; }
         .admin-btn { padding: 6px 14px; font-size: 0.8em; font-weight: bold; border-radius: 8px; border: none; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         #btn-new-article, #btn-archive, #btn-edit-pengaturan, #btn-share { color: white; }
         #btn-new-article { background-color: var(--warna-utama); }
@@ -28,18 +39,6 @@
         .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ddd; padding-bottom: 10px; margin-bottom: 15px; }
         .modal-header h2 { margin: 0; color: var(--warna-utama); font-size: 1.2em; }
         .modal-close-btn { font-size: 1.8em; font-weight: bold; cursor: pointer; color: #aaa; line-height: 1; }
-        .modal-close-btn:hover { color: #333; }
-        .setting-row { display: flex; flex-wrap: nowrap; align-items: flex-end; gap: 8px; padding-bottom: 12px; margin-bottom: 12px; border-bottom: 1px solid #e0e0e0; }
-        .setting-input-group { flex-grow: 1; min-width: 0; }
-        .setting-input-group label { display: block; margin-bottom: 5px; font-weight: bold; color: #2e7d32; font-size: 0.8em; }
-        .input-with-history input, .input-with-history textarea { font-size: 0.9em; padding: 8px; }
-        .btn-apply { padding: 7px 10px; font-size: 0.75em; font-weight: bold; border-radius: 6px; border: none; background-color: #1976d2; color: white; cursor: pointer; transition: background-color 0.3s; display: flex; align-items: center; justify-content: center; gap: 5px; flex-shrink: 0; margin-bottom: 2px; }
-        .btn-apply:hover { background-color: #1565c0; }
-        .ai-generator-section { padding-bottom: 15px; margin-bottom: 15px; border-bottom: 1px dashed #aaa; }
-        .ai-generator-section p { font-weight: bold; color: #333; margin-top: 0; text-align: center; }
-        .ai-prompt-group { display: flex; gap: 8px; align-items: flex-end; }
-        .ai-prompt-group .form-group { flex-grow: 1; margin-bottom: 0; }
-        .ai-prompt-group .btn-update { flex-shrink: 0; width: auto; font-size: 0.8em; padding: 8px 12px; }
         .notification { padding: 12px; margin-bottom: 15px; border-radius: 5px; text-align: center; font-weight: bold; display: none; border: 1px solid transparent; opacity: 0; transition: opacity 0.5s; }
         .notification.show { display: block; opacity: 1; }
         .notification.error { background-color: #f8d7da; color: #721c24; border-color: #f5c6cb; }
@@ -52,113 +51,53 @@
         .btn-update:hover { background-position: right center; }
         .btn-update:disabled { cursor: not-allowed; opacity: 0.7; }
         .spinner { width: 18px; height: 18px; border: 3px solid rgba(255, 255, 255, 0.3); border-radius: 50%; border-top-color: #fff; animation: spin 1s ease-in-out infinite; display: none; }
+        @keyframes spin { to { transform: rotate(360deg); } }
         .btn-update.loading .spinner, .btn-apply.loading .spinner { display: block; }
         .btn-update.loading .btn-text, .btn-apply.loading .btn-text { display: none; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .container-majalah { background-color: #ffffff; transition: opacity 0.5s ease-in; }
-        header, main, .footer-content-inner { max-width: 800px; margin: 0 auto; box-sizing: border-box; }
-        header { display: flex; align-items: center; padding: 15px 25px; border-bottom: 4px solid var(--warna-aksen); }
+        
+        /* Layout Utama Mobile-Only */
+        #majalah-wrapper { display: flex; flex-grow: 1; flex-direction: column; min-height: 0; }
+        .container-majalah { flex-grow: 1; display: flex; flex-direction: column; height: 100%; background-color: #ffffff; }
+        header { flex-shrink: 0; display: flex; align-items: center; padding: 10px 15px; border-bottom: 4px solid var(--warna-aksen); }
+        main { flex-grow: 1; overflow-y: auto; padding: 15px; }
+        footer { flex-shrink: 0; background-color: var(--warna-utama); color: #ffffff; padding: 15px 0; text-align: center; }
+        
+        /* Header */
         header .logo { flex-shrink: 0; }
         header .logo img { height: 60px; width: auto; }
-        header .logo a { display: inline-block; transition: transform 0.2s ease-in-out; }
-        header .logo a:hover { transform: scale(1.05); }
+        header .logo a { display: inline-block; }
         .title-container { flex-grow: 1; text-align: center; min-width: 0; padding: 0 15px; }
-        header h1 { font-size: clamp(1.5em, 4vw, 2.2em); color: var(--warna-utama); margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        header h1 { font-size: clamp(1.5em, 6vw, 2em); color: var(--warna-utama); margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .magazine-subtitle { font-size: 0.8em; font-style: italic; color: #555; margin: 4px 0 0 0; line-height: 1.3; }
-        main { padding: 22px; }
-        article .judul-artikel { font-size: clamp(1.8em, 5vw, 2.2em); margin-top: 0; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px; color: #388e3c; }
-        .artikel-container::after { content: ""; clear: both; display: table; }
-        .foto-samping { float: left; width: 45%; max-width: 320px; margin-right: 15px; margin-bottom: 10px; }
-        .foto-samping-inner { display: flex; flex-wrap: wrap; position: relative; }
-        .foto-samping-inner a { display: block; box-sizing: border-box; padding: 0; }
-        .foto-samping-inner img { width: 100%; height: 100%; object-fit: cover; display: block; }
-        .foto-samping[data-count="1"] a { width: 100%; }
-        .foto-samping[data-count="2"] a { width: 50%; }
-        .foto-samping[data-count="3"] a, .foto-samping[data-count="4"] a { width: 50%; }
-        .teks-artikel { overflow: hidden; }
-        .teks-artikel-inner { text-align: justify; line-height: 1.6; font-size: 1em; overflow-wrap: break-word; hyphens: auto; }
-        .teks-artikel-inner table { width: 100%; border-collapse: collapse; margin: 1em 0; font-size: 0.9em; white-space: normal; }
-        .teks-artikel-inner th, .teks-artikel-inner td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        .teks-artikel-inner th { background-color: #f2f2f2; }
-        .teks-artikel-inner tr:nth-child(even) { background-color: #f9f9f9; }
-        .teks-artikel-inner > p { margin: 0 0 1em 0; }
-        footer { background-color: var(--warna-utama); color: #ffffff; padding: 15px 0; text-align: center; }
+
+        /* Artikel & Shape Wrapping */
+        article .judul-artikel { font-size: 1.3em; margin-top: 0; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 10px; color: #388e3c; }
+        .teks-artikel { overflow: visible; }
+        .foto-samping { max-width: none; margin-bottom: 10px; width: 25vw; height: 25vw; }
+        .foto-samping-inner, .foto-samping-inner a, .foto-samping-inner img { border-radius: 50%; width: 100%; height: 100%; object-fit: cover; }
+
+        .artikel-container[data-img-pos="left"] .foto-samping { float: left; margin-right: 15px; shape-outside: circle(50%); clip-path: circle(50%); shape-margin: 10px;}
+        .artikel-container[data-img-pos="right"] .foto-samping { float: right; margin-left: 15px; shape-outside: circle(50%); clip-path: circle(50%); shape-margin: 10px;}
+        .artikel-container[data-img-pos="center"] .foto-samping { float: left; width: 40vw; height: 40vw; margin-left: 30vw; margin-right: 30vw; shape-outside: circle(50%); shape-margin: 10px;}
+        
+        .teks-artikel-inner { text-align: justify; line-height: 1.6; font-size: 1em; }
+        
+        /* Footer */
         .footer-content { display: flex; flex-direction: column; gap: 15px; }
         .footer-content-inner { display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; gap: 15px; font-size: 0.9em; padding: 0 15px; }
-        #footerMedsos a { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; color: white; transition: opacity 0.3s; }
-        #footerMedsos a:hover { opacity: 0.8; }
+        #footerMedsos a { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; color: white; }
         .news-ticker-wrap { width: 100%; background-color: rgba(0,0,0,0.2); padding: 8px 0; overflow: hidden; white-space: nowrap; }
         .news-ticker { display: inline-block; animation: ticker-scroll 60s linear infinite; }
-        .news-ticker-wrap:hover .news-ticker { animation-play-state: paused; }
-        .news-ticker-item { display: inline-block; margin: 0 20px; color: #fff; text-decoration: none; font-style: italic; }
-        .news-ticker-item:hover { text-decoration: underline; }
         @keyframes ticker-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
+        .news-ticker-item { display: inline-block; margin: 0 20px; color: #fff; text-decoration: none; font-style: italic; }
+
+        /* Lain-lain */
         .skeleton { animation: skeleton-pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
         @keyframes skeleton-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
         .skeleton-text { height: 1em; background-color: #e0e0e0; border-radius: 4px; }
         .skeleton-img { background-color: #e0e0e0; }
         .archive-list { list-style: none; padding: 0; }
         .archive-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #ddd; }
-        .archive-item span { flex-grow: 1; margin-right: 10px; }
-        .archive-item button { font-size: 0.8em; padding: 4px 8px; }
-
-        @media (max-width: 650px) { 
-            body { 
-                display: flex; flex-direction: column; height: 100vh; padding-bottom: 0; 
-            }
-            .admin-controls { flex-shrink: 0; margin: 0; border-radius: 0; padding: 10px; } 
-            #majalah-wrapper { display: flex; flex-grow: 1; flex-direction: column; min-height: 0; }
-            .container-majalah {
-                flex-grow: 1; display: flex; flex-direction: column; height: 100%;
-            }
-            header { flex-shrink: 0; padding: 10px 15px; }
-            main { 
-                flex-grow: 1; overflow-y: auto; padding: 15px; 
-            }
-            footer { flex-shrink: 0; position: static; } 
-            header h1 { font-size: clamp(1.5em, 6vw, 2em); }
-            article .judul-artikel { font-size: 1.3em; margin-bottom: 10px; }
-            .teks-artikel-inner { font-size: 1em; max-height: none; }
-            .read-more-btn { display: none; }
-            
-            .teks-artikel { overflow: visible; }
-            .foto-samping {
-                max-width: none;
-                margin-bottom: 10px;
-                width: 25vw; 
-                height: 25vw;
-            }
-            .foto-samping-inner, .foto-samping-inner a, .foto-samping-inner img {
-                border-radius: 50%;
-            }
-
-            .artikel-container[data-img-pos="left"] .foto-samping {
-                float: left;
-                margin-right: 2px;
-                shape-outside: circle(50% at 50% 50%);
-                clip-path: circle(50% at 50% 50%);
-            }
-
-            .artikel-container[data-img-pos="right"] .foto-samping {
-                float: right;
-                margin-left: 15px;
-                shape-outside: circle(50% at 50% 50%);
-                clip-path: circle(50% at 50% 50%);
-            }
-
-            .artikel-container[data-img-pos="center"] .foto-samping {
-                float: left;
-                width: 40vw;
-                height: 40vw;
-                margin-left: 30vw;
-                margin-right: 30vw;
-                shape-outside: circle(50% at 50% 50%);
-            }
-            .artikel-container[data-img-pos="center"] .foto-samping-inner {
-                width: 100%;
-                height: 100%;
-            }
-        }
     </style>
 </head>
 <body>
@@ -233,7 +172,6 @@
                         </div>
                     </div>
                 </article>
-                <button id="btn-baca-selengkapnya" class="read-more-btn" style="display: none;">Baca Selengkapnya</button>
             </main>
             <footer>
                 <div class="footer-content">
@@ -441,10 +379,6 @@
                 ${createSettingRow('Alamat', 'Alamat Sekretariat')}
                 ${createSettingRow('AI_System_Prompt', 'Prompt Teks AI', 'text', true)}
             `;
-        }
-        
-        function setupReadMore() {
-            // Not used in mobile single frame view
         }
 
         function displayContent(data) {
@@ -808,3 +742,4 @@
     </script>
 </body>
 </html>
+
