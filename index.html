@@ -75,44 +75,44 @@
         header h1 { font-size: clamp(1.5em, 6vw, 2em); color: var(--warna-utama); margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .magazine-subtitle { font-size: 0.8em; font-style: italic; color: #555; margin: 4px 0 0 0; line-height: 1.3; }
 
-        /* === PERBAIKAN TOTAL PADA ARTIKEL & SHAPE WRAPPING === */
+        /* === PERBAIKAN TOTAL PADA ARTIKEL & SHAPE WRAPPING v3 === */
         article .judul-artikel { font-size: 1.3em; margin-top: 0; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 10px; color: #388e3c; }
         
-        .artikel-container {
+        .read-more-wrapper {
             position: relative;
             max-height: 300px;
             overflow: hidden;
             transition: max-height 0.6s ease-in-out;
         }
-        .artikel-container.expanded {
+        .read-more-wrapper.expanded {
             max-height: 5000px;
         }
-        .artikel-container::after {
+        .read-more-wrapper::after {
             content: '';
             position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
+            bottom: 0; left: 0; right: 0;
             height: 60px;
             background: linear-gradient(to top, rgba(255, 255, 255, 1) 20%, rgba(255, 255, 255, 0));
             pointer-events: none;
             transition: opacity 0.3s;
         }
-        .artikel-container.expanded::after {
+        .read-more-wrapper.expanded::after {
             opacity: 0;
         }
+
+        .artikel-container {
+            position: relative;
+        }
+        .artikel-container::after { content: ""; display: table; clear: both; }
 
         .foto-samping { 
             max-width: none; 
             margin-bottom: 10px; 
-            width: 35vw; /* Sedikit lebih besar untuk PNG */
-            height: 35vw; 
         }
-        /* PERUBAHAN: Hapus border-radius dari sini agar bentuk PNG asli terlihat */
         .foto-samping-inner, .foto-samping-inner a, .foto-samping-inner img { 
             width: 100%; 
             height: 100%; 
-            object-fit: contain; /* Gunakan contain agar gambar tidak terpotong */
+            object-fit: contain; 
         }
 
         .teks-artikel-inner {
@@ -121,33 +121,42 @@
             font-size: 1em;
         }
         
-        /* Posisi Kiri & Kanan (shape-outside akan ditambahkan oleh JS) */
+        /* Posisi Kiri & Kanan */
+        .artikel-container[data-img-pos="left"] .foto-samping,
+        .artikel-container[data-img-pos="right"] .foto-samping { 
+            width: 35vw; 
+            height: 35vw; 
+            shape-margin: 10px;
+        }
         .artikel-container[data-img-pos="left"] .foto-samping { 
             float: left; 
             margin-right: 10px; 
-            shape-margin: 10px;
         }
         .artikel-container[data-img-pos="right"] .foto-samping { 
             float: right; 
             margin-left: 10px; 
-            shape-margin: 10px;
         }
 
-        /* Posisi Tengah akan tetap menggunakan lingkaran agar stabil */
+        /* Posisi Tengah (FIXED) */
         .artikel-container[data-img-pos="center"] .foto-samping {
             float: left;
-            position: relative;
+            width: 100%;
+            height: 40vw;
+            shape-outside: circle(20vw at 50% 50%);
+            shape-margin: 10px;
+        }
+        .artikel-container[data-img-pos="center"] .foto-samping-inner {
+            position: absolute;
+            top: 0;
             left: 50%;
             transform: translateX(-50%);
             width: 40vw;
             height: 40vw;
-            shape-outside: circle(50%); /* Tetap lingkaran */
-            clip-path: circle(50%); /* Potong jadi lingkaran */
-            shape-margin: 10px;
         }
         .artikel-container[data-img-pos="center"] .foto-samping-inner img {
-            border-radius: 50%; /* Jadikan gambar lingkaran khusus di tengah */
+            border-radius: 50%;
             object-fit: cover;
+            clip-path: circle(50%);
         }
 
         .read-more-btn {
@@ -239,9 +248,11 @@
             <main>
                 <article>
                     <h2 class="judul-artikel" id="artikelJudul"></h2>
-                    <div class="artikel-container" data-img-pos="left">
-                        <div class="foto-samping"><div class="foto-samping-inner" id="foto-container"></div></div>
-                        <div class="teks-artikel-inner" id="artikelTeks"></div>
+                    <div class="read-more-wrapper">
+                        <div class="artikel-container" data-img-pos="left">
+                            <div class="foto-samping"><div class="foto-samping-inner" id="foto-container"></div></div>
+                            <div class="teks-artikel-inner" id="artikelTeks"></div>
+                        </div>
                     </div>
                 </article>
                 <button id="btn-baca-selengkapnya" class="read-more-btn">Baca Selengkapnya</button>
@@ -261,7 +272,7 @@
         </div>
     </div>
 
-    <div id="skeleton-loader"><div class="container-majalah"><header class="skeleton"><div style="height: 120px;"></div></header><main><div class="judul-artikel skeleton skeleton-text" style="height: 2.2em; width: 80%; margin-bottom: 20px;"></div><div class="artikel-container"><div class="foto-samping skeleton skeleton-img" style="height: 250px;"></div><div class="teks-artikel-inner"><p class="skeleton skeleton-text"></p><p class="skeleton skeleton-text"></p><p class="skeleton skeleton-text"></p></div></div></main><footer class="skeleton"><div style="height: 100px;"></div></footer></div></div>
+    <div id="skeleton-loader"><div class="container-majalah"><header class="skeleton"><div style="height: 120px;"></div></header><main><div class="judul-artikel skeleton skeleton-text" style="height: 2.2em; width: 80%; margin-bottom: 20px;"></div><div class="read-more-wrapper"><div class="artikel-container"><div class="foto-samping skeleton skeleton-img" style="height: 250px;"></div><div class="teks-artikel-inner"><p class="skeleton skeleton-text"></p><p class="skeleton skeleton-text"></p><p class="skeleton skeleton-text"></p></div></div></div></main><footer class="skeleton"><div style="height: 100px;"></div></footer></div></div>
     <div id="error-container" style="display: none; max-width: 800px; margin: 20px auto; padding: 20px; background-color: #f8d7da; border: 1px solid #f5c6cb; border-radius: 8px; color: #721c24;"><h2>Masalah Kritis</h2><p id="error-message"></p><p>Periksa kembali panduan penyiapan Google Sheets Anda.</p></div>
 
     <script>
@@ -455,26 +466,25 @@
         }
 
         function setupReadMore() {
-            const artikelContainer = document.querySelector('.artikel-container');
+            const readMoreWrapper = document.querySelector('.read-more-wrapper');
             const btnReadMore = document.getElementById('btn-baca-selengkapnya');
             
-            if (!artikelContainer || !btnReadMore) return;
+            if (!readMoreWrapper || !btnReadMore) return;
 
-            artikelContainer.classList.remove('expanded');
+            readMoreWrapper.classList.remove('expanded');
             btnReadMore.style.display = 'none';
             btnReadMore.textContent = 'Baca Selengkapnya';
 
             if (!btnReadMore.hasAttribute('data-listener-attached')) {
                 btnReadMore.addEventListener('click', () => {
-                    artikelContainer.classList.toggle('expanded');
-                    btnReadMore.textContent = artikelContainer.classList.contains('expanded') ? 'Tampilkan Lebih Sedikit' : 'Baca Selengkapnya';
+                    readMoreWrapper.classList.toggle('expanded');
+                    btnReadMore.textContent = readMoreWrapper.classList.contains('expanded') ? 'Tampilkan Lebih Sedikit' : 'Baca Selengkapnya';
                 });
                 btnReadMore.setAttribute('data-listener-attached', 'true');
             }
 
             setTimeout(() => {
-                const teksInner = document.getElementById('artikelTeks');
-                if (teksInner && teksInner.scrollHeight > 300) { 
+                if (readMoreWrapper.scrollHeight > 300) { 
                     btnReadMore.style.display = 'block';
                 }
             }, 150); 
@@ -500,12 +510,9 @@
             fotoContainer.innerHTML = '';
             const imageUrls = article.imageUrls || [];
             
-            // --- PERBAIKAN LOGIKA SHAPE-OUTSIDE ---
-            fotoSampingDiv.style.shapeOutside = ''; // Reset
-            fotoSampingDiv.style.clipPath = ''; // Reset
-            const imgElementForShape = fotoSampingDiv.querySelector('img');
-            if(imgElementForShape) imgElementForShape.style.borderRadius = ''; // Reset
-
+            fotoSampingDiv.style.shapeOutside = '';
+            fotoSampingDiv.style.clipPath = '';
+            
             if (imageUrls.length > 0 && imageUrls[0] && imageUrls[0].trim() !== '') {
                 fotoSampingDiv.style.display = 'block';
                 imageUrls.forEach(url => {
@@ -516,10 +523,8 @@
 
                 const position = article.imagePosition || 'left';
                 if (position === 'left' || position === 'right') {
-                    // Terapkan shape dari URL gambar PNG
                     fotoSampingDiv.style.shapeOutside = `url(${imageUrls[0]})`;
                 }
-                // Posisi tengah sudah diatur oleh CSS secara default
                 
             } else {
                 fotoSampingDiv.style.display = 'none';
