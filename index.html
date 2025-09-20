@@ -54,8 +54,6 @@
         @keyframes spin { to { transform: rotate(360deg); } }
         .btn-update.loading .spinner, .btn-apply.loading .spinner { display: block; }
         .btn-update.loading .btn-text, .btn-apply.loading .btn-text { display: none; }
-        
-        /* PERBAIKAN: Menambahkan kembali gaya untuk modal pengaturan */
         .setting-row { display: flex; flex-wrap: nowrap; align-items: flex-end; gap: 8px; padding-bottom: 12px; margin-bottom: 12px; border-bottom: 1px solid #e0e0e0; }
         .setting-input-group { flex-grow: 1; min-width: 0; }
         .setting-input-group label { font-size: 0.8em; }
@@ -77,38 +75,88 @@
         header h1 { font-size: clamp(1.5em, 6vw, 2em); color: var(--warna-utama); margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .magazine-subtitle { font-size: 0.8em; font-style: italic; color: #555; margin: 4px 0 0 0; line-height: 1.3; }
 
-        /* Artikel & Shape Wrapping */
+        /* === PERBAIKAN TOTAL PADA ARTIKEL & SHAPE WRAPPING === */
         article .judul-artikel { font-size: 1.3em; margin-top: 0; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 10px; color: #388e3c; }
-        .teks-artikel { overflow: visible; }
-        .foto-samping { max-width: none; margin-bottom: 10px; width: 25vw; height: 25vw; }
-        .foto-samping-inner, .foto-samping-inner a, .foto-samping-inner img { border-radius: 50%; width: 100%; height: 100%; object-fit: cover; }
-        .artikel-container[data-img-pos="left"] .foto-samping { float: left; margin-right: 15px; shape-outside: circle(50%); clip-path: circle(50%); shape-margin: 10px;}
-        .artikel-container[data-img-pos="right"] .foto-samping { float: right; margin-left: 15px; shape-outside: circle(50%); clip-path: circle(50%); shape-margin: 10px;}
-        .artikel-container[data-img-pos="center"] .foto-samping { float: left; width: 40vw; height: 40vw; margin-left: 30vw; margin-right: 30vw; shape-outside: circle(50%); shape-margin: 10px;}
         
-        .teks-artikel-inner { 
-            text-align: justify; 
-            line-height: 1.6; 
-            font-size: 1em;
+        /* Kontainer utama. Sibling dari tombol. */
+        .artikel-container {
+            position: relative;
             max-height: 300px;
-            overflow: hidden;
-            transition: max-height 0.5s ease-in-out;
+            overflow: hidden; /* Tetap hidden, tapi di kontainer yang benar */
+            transition: max-height 0.6s ease-in-out;
         }
-        .teks-artikel-inner.expanded {
+        .artikel-container.expanded {
             max-height: 5000px;
         }
+        /* Gradient untuk efek fade-out, menyembunyikan 'overflow:hidden' */
+        .artikel-container::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: linear-gradient(to top, rgba(255, 255, 255, 1) 20%, rgba(255, 255, 255, 0));
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        .artikel-container.expanded::after {
+            opacity: 0;
+        }
+
+        .foto-samping { 
+            max-width: none; 
+            margin-bottom: 10px; 
+            width: 25vw; 
+            height: 25vw; 
+        }
+        .foto-samping-inner, .foto-samping-inner a, .foto-samping-inner img { 
+            border-radius: 50%; 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+        }
+
+        /* Teks sekarang jadi sibling dari gambar, ini KUNCI-nya */
+        .teks-artikel-inner {
+            text-align: justify;
+            line-height: 1.6;
+            font-size: 1em;
+        }
+        
+        /* Posisi Kiri & Kanan */
+        .artikel-container[data-img-pos="left"] .foto-samping { 
+            float: left; 
+            margin-right: 15px; 
+            shape-outside: circle(50%); 
+            clip-path: circle(50%); 
+            shape-margin: 10px;
+        }
+        .artikel-container[data-img-pos="right"] .foto-samping { 
+            float: right; 
+            margin-left: 15px; 
+            shape-outside: circle(50%); 
+            clip-path: circle(50%); 
+            shape-margin: 10px;
+        }
+
+        /* Posisi Tengah (FIXED) */
+        .artikel-container[data-img-pos="center"] .foto-samping {
+            float: left;
+            position: relative; /* Agar bisa di-transform */
+            left: 50%; /* Pindahkan titik awal ke tengah */
+            transform: translateX(-50%); /* Tarik kembali setengah lebarnya */
+            width: 40vw;
+            height: 40vw;
+            shape-outside: circle(50%);
+            clip-path: circle(50%);
+            shape-margin: 10px;
+        }
+
         .read-more-btn {
-            display: none;
-            width: 100%;
-            text-align: center;
-            padding: 10px;
-            background-color: var(--warna-utama);
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            border: none;
-            border-radius: 5px;
-            margin-top: 15px;
+            display: none; width: 100%; text-align: center; padding: 10px;
+            background-color: var(--warna-utama); color: white; font-weight: bold;
+            cursor: pointer; border: none; border-radius: 5px; margin-top: 15px;
         }
         
         /* Footer */
@@ -194,11 +242,10 @@
             <main>
                 <article>
                     <h2 class="judul-artikel" id="artikelJudul"></h2>
+                    <!-- === PERBAIKAN STRUKTUR HTML === -->
                     <div class="artikel-container" data-img-pos="left">
                         <div class="foto-samping"><div class="foto-samping-inner" id="foto-container"></div></div>
-                        <div class="teks-artikel">
-                            <div class="teks-artikel-inner" id="artikelTeks"></div>
-                        </div>
+                        <div class="teks-artikel-inner" id="artikelTeks"></div>
                     </div>
                 </article>
                 <button id="btn-baca-selengkapnya" class="read-more-btn">Baca Selengkapnya</button>
@@ -218,7 +265,7 @@
         </div>
     </div>
 
-    <div id="skeleton-loader"><div class="container-majalah"><header class="skeleton"><div style="height: 120px;"></div></header><main><div class="judul-artikel skeleton skeleton-text" style="height: 2.2em; width: 80%; margin-bottom: 20px;"></div><div class="artikel-container"><div class="foto-samping skeleton skeleton-img" style="height: 250px;"></div><div class="teks-artikel"><p class="skeleton skeleton-text"></p><p class="skeleton skeleton-text"></p><p class="skeleton skeleton-text"></p></div></div></main><footer class="skeleton"><div style="height: 100px;"></div></footer></div></div>
+    <div id="skeleton-loader"><div class="container-majalah"><header class="skeleton"><div style="height: 120px;"></div></header><main><div class="judul-artikel skeleton skeleton-text" style="height: 2.2em; width: 80%; margin-bottom: 20px;"></div><div class="artikel-container"><div class="foto-samping skeleton skeleton-img" style="height: 250px;"></div><div class="teks-artikel-inner"><p class="skeleton skeleton-text"></p><p class="skeleton skeleton-text"></p><p class="skeleton skeleton-text"></p></div></div></main><footer class="skeleton"><div style="height: 100px;"></div></footer></div></div>
     <div id="error-container" style="display: none; max-width: 800px; margin: 20px auto; padding: 20px; background-color: #f8d7da; border: 1px solid #f5c6cb; border-radius: 8px; color: #721c24;"><h2>Masalah Kritis</h2><p id="error-message"></p><p>Periksa kembali panduan penyiapan Google Sheets Anda.</p></div>
 
     <script>
@@ -345,7 +392,7 @@
                     <select id="modalPosisiGambar">
                         <option value="left" ${isLeft}>Kiri</option>
                         <option value="right" ${isRight}>Kanan</option>
-                        <option value="center" ${isCenter}>Tengah (Teks di kiri-kanan)</option>
+                        <option value="center" ${isCenter}>Tengah</option>
                     </select>
                 </div>
                 <button class="btn-update" onclick="updateArticle(event, '${formType}')"><span class="btn-text">${buttonText}</span><div class="spinner"></div></button>
@@ -412,31 +459,31 @@
         }
 
         function setupReadMore() {
-            const teksArtikel = document.getElementById('artikelTeks');
+            const artikelContainer = document.querySelector('.artikel-container');
             const btnReadMore = document.getElementById('btn-baca-selengkapnya');
             
-            if (!teksArtikel || !btnReadMore) {
-                console.error("Elemen artikel atau tombol tidak ditemukan.");
-                return;
-            }
+            if (!artikelContainer || !btnReadMore) return;
 
-            teksArtikel.classList.remove('expanded');
+            artikelContainer.classList.remove('expanded');
             btnReadMore.style.display = 'none';
             btnReadMore.textContent = 'Baca Selengkapnya';
 
             if (!btnReadMore.hasAttribute('data-listener-attached')) {
                 btnReadMore.addEventListener('click', () => {
-                    teksArtikel.classList.toggle('expanded');
-                    btnReadMore.textContent = teksArtikel.classList.contains('expanded') ? 'Tampilkan Lebih Sedikit' : 'Baca Selengkapnya';
+                    artikelContainer.classList.toggle('expanded');
+                    btnReadMore.textContent = artikelContainer.classList.contains('expanded') ? 'Tampilkan Lebih Sedikit' : 'Baca Selengkapnya';
                 });
                 btnReadMore.setAttribute('data-listener-attached', 'true');
             }
 
+            // Cek apakah tombol diperlukan setelah render
+            // Gunakan scrollHeight dari .teks-artikel-inner
             setTimeout(() => {
-                if (teksArtikel.scrollHeight > 300) { 
+                const teksInner = document.getElementById('artikelTeks');
+                if (teksInner && teksInner.scrollHeight > 300) { 
                     btnReadMore.style.display = 'block';
                 }
-            }, 100); 
+            }, 150); 
         }
 
         function displayContent(data) {
@@ -458,7 +505,7 @@
             const fotoSampingDiv = fotoContainer.parentElement;
             fotoContainer.innerHTML = '';
             const imageUrls = article.imageUrls || [];
-            if (imageUrls.length > 0 && imageUrls[0]) {
+            if (imageUrls.length > 0 && imageUrls[0] && imageUrls[0].trim() !== '') {
                 fotoSampingDiv.style.display = 'block';
                 imageUrls.forEach(url => {
                     if(url.trim() !== '') {
@@ -680,7 +727,14 @@
         }
         
         window.updateSingleSetting = function(key, button) {
-           // ... (Fungsi ini tidak berubah dari versi sebelumnya)
+           const input = document.getElementById(`modal${key}`);
+            const value = input.value.trim();
+            const payload = { type: 'settings', data: { [key]: value } };
+            
+            sendData(payload, button, 'settings', () => {
+                showNotification("Pengaturan diterapkan!", 'success', 'settings');
+                fullData.settings.current[key] = value;
+            });
         };
 
         window.updateArticle = function(event, formType) {
