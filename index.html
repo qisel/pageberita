@@ -126,15 +126,15 @@
         .artikel-container[data-img-pos="right"] .foto-samping { 
             width: 35vw; 
             height: 35vw; 
-            shape-margin: 2 px;
+            shape-margin: 2px;
         }
         .artikel-container[data-img-pos="left"] .foto-samping { 
             float: left; 
-            margin-right: 2px; 
+            margin-right: 10px; 
         }
         .artikel-container[data-img-pos="right"] .foto-samping { 
             float: right; 
-            margin-left: 2px; 
+            margin-left: 10px; 
         }
 
         /* Posisi Tengah (FIXED) */
@@ -640,6 +640,25 @@
             }
         }
         
+        async function fetchWithBackoff(url, options, maxRetries = 5) {
+            let delay = 1000;
+            for (let i = 0; i < maxRetries; i++) {
+                const response = await fetch(url, options);
+                if (response.status === 429) {
+                    if (i === maxRetries - 1) {
+                        // Lempar error dengan teks dari response agar bisa ditangkap nanti
+                        throw new Error(`Permintaan AI gagal dengan status 429: ${await response.text()}`);
+                    }
+                    console.log(`Rate limit terlampaui. Mencoba lagi dalam ${delay / 1000} detik...`);
+                    await new Promise(resolve => setTimeout(resolve, delay + Math.random() * 1000));
+                    delay *= 2;
+                } else {
+                    return response;
+                }
+            }
+            throw new Error("Gagal menghubungi server AI setelah beberapa kali percobaan.");
+        }
+
         window.generateWithGemini = async function(button) {
             const promptInput = document.getElementById('aiTextPrompt');
             const userPrompt = promptInput.value.trim();
@@ -653,6 +672,7 @@
             const payload = {
                 type: 'generate-ai-content',
                 data: {
+                    model: 'gemini-1.5-flash-latest', 
                     contents: [{ parts: [{ text: userPrompt }] }],
                     tools: [{ "google_search": {} }]
                 }
@@ -663,10 +683,15 @@
             }
             
             try {
-                const response = await fetch(GOOGLE_SHEET_WEB_APP_URL, {
+                const response = await fetchWithBackoff(GOOGLE_SHEET_WEB_APP_URL, {
                     method: 'POST', body: JSON.stringify(payload)
                 });
-                if (!response.ok) throw new Error(`API request failed with status ${response.status}`);
+
+                if (!response.ok) {
+                    // Coba baca teks error dari response, karena bisa jadi JSON atau teks biasa
+                    const errorText = await response.text();
+                    throw new Error(`Permintaan AI gagal dengan status ${response.status}: ${errorText}`);
+                }
                 const result = await response.json();
                 if (!result.success) throw new Error(result.message);
 
@@ -693,7 +718,13 @@
                 showNotification("Konten berhasil dibuat oleh AI! Silakan tinjau.", 'success', 'article');
             } catch (error) {
                 console.error("Error generating content with AI:", error);
-                showNotification(`Gagal membuat konten dengan AI: ${error.message}`, 'error', 'article');
+                
+                let userMessage = `Gagal membuat konten dengan AI: ${error.message}`;
+                if (error.message && (error.message.includes("status 429") || error.message.includes("RESOURCE_EXHAUSTED"))) {
+                    userMessage = "Batas penggunaan AI telah tercapai untuk saat ini. Silakan coba lagi nanti.";
+                }
+                showNotification(userMessage, 'error', 'article');
+
             } finally {
                 button.classList.remove('loading');
                 button.disabled = false;
@@ -847,3 +878,4 @@
     </script>
 </body>
 </html>
+
