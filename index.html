@@ -13,7 +13,8 @@
     <meta property="twitter:card" content="summary_large_image" />
     <style>
         :root { --warna-utama: #1b5e20; --warna-aksen: #ffc107; }
-        body { font-family: 'Georgia', 'Times New Roman', Times, serif; margin: 0; padding: 0; background-color: #f8f9fa; color: #333; }
+        html, body { height: 100%; margin: 0; }
+        body { font-family: 'Georgia', 'Times New Roman', Times, serif; padding: 0; background-color: #f8f9fa; color: #333; }
         .admin-controls { max-width: 800px; margin: 20px auto; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; padding: 10px; border-radius: 12px; background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         .admin-btn { padding: 6px 14px; font-size: 0.8em; font-weight: bold; border-radius: 8px; border: none; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         #btn-new-article, #btn-archive, #btn-edit-pengaturan, #btn-share { color: white; }
@@ -68,31 +69,19 @@
         article .judul-artikel { font-size: clamp(1.8em, 5vw, 2.2em); margin-top: 0; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px; color: #388e3c; }
         .artikel-container::after { content: ""; clear: both; display: table; }
         .foto-samping { float: left; width: 45%; max-width: 320px; margin-right: 15px; margin-bottom: 10px; }
-        .foto-samping-inner { display: flex; flex-wrap: wrap; }
+        .foto-samping-inner { display: flex; flex-wrap: wrap; position: relative; }
         .foto-samping-inner a { display: block; box-sizing: border-box; padding: 0; }
         .foto-samping-inner img { width: 100%; height: 100%; object-fit: cover; display: block; }
         .foto-samping[data-count="1"] a { width: 100%; }
         .foto-samping[data-count="2"] a { width: 50%; }
         .foto-samping[data-count="3"] a, .foto-samping[data-count="4"] a { width: 50%; }
-        
-        .teks-artikel {
-            /* Kosong */
-        }
-        
-        .teks-artikel-inner {
-            text-align: justify;
-            line-height: 1.6;
-            font-size: 1em;
-            overflow-wrap: break-word; 
-            hyphens: auto; 
-        }
-
+        .teks-artikel { overflow: hidden; }
+        .teks-artikel-inner { text-align: justify; line-height: 1.6; font-size: 1em; overflow-wrap: break-word; hyphens: auto; }
         .teks-artikel-inner table { width: 100%; border-collapse: collapse; margin: 1em 0; font-size: 0.9em; white-space: normal; }
         .teks-artikel-inner th, .teks-artikel-inner td { border: 1px solid #ddd; padding: 8px; text-align: left; }
         .teks-artikel-inner th { background-color: #f2f2f2; }
         .teks-artikel-inner tr:nth-child(even) { background-color: #f9f9f9; }
         .teks-artikel-inner > p { margin: 0 0 1em 0; }
-
         footer { background-color: var(--warna-utama); color: #ffffff; padding: 15px 0; text-align: center; }
         .footer-content { display: flex; flex-direction: column; gap: 15px; }
         .footer-content-inner { display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; gap: 15px; font-size: 0.9em; padding: 0 15px; }
@@ -114,43 +103,61 @@
         .archive-item button { font-size: 0.8em; padding: 4px 8px; }
 
         @media (max-width: 650px) { 
-            body { padding: 0; padding-bottom: 120px; }
-            .admin-controls { margin: 0; border-radius: 0; border-left: none; border-right: none; padding: 15px 10px; } 
-            main { padding: 15px; }
-            header { padding: 10px 15px; }
-            header h1 { padding: 0 10px; font-size: clamp(1.8em, 7vw, 2.8em); }
-            .magazine-subtitle { font-size: 0.7em; }
-            article .judul-artikel { font-size: 1.4em; }
-            .footer-content { gap: 10px; padding-bottom: 0; }
-            .footer-content-inner { font-size: 0.75em; }
+            body { 
+                display: flex; flex-direction: column; height: 100vh; padding-bottom: 0; 
+            }
+            .admin-controls { flex-shrink: 0; margin: 0; border-radius: 0; padding: 10px; } 
+            #majalah-wrapper { display: flex; flex-grow: 1; flex-direction: column; min-height: 0; }
+            .container-majalah {
+                flex-grow: 1; display: flex; flex-direction: column; height: 100%;
+            }
+            header { flex-shrink: 0; padding: 10px 15px; }
+            main { 
+                flex-grow: 1; overflow-y: auto; padding: 15px; 
+            }
+            footer { flex-shrink: 0; position: static; } 
+            header h1 { font-size: clamp(1.5em, 6vw, 2em); }
+            article .judul-artikel { font-size: 1.3em; margin-bottom: 10px; }
+            .teks-artikel-inner { font-size: 1em; max-height: none; }
+            .read-more-btn { display: none; }
             
-            .teks-artikel-inner {
-                font-size: 1.1em;
-                max-height: 300px; 
-                overflow: hidden;
-                /* PERBAIKAN FINAL: Menghapus "position: relative;" yang bermasalah */
-                transition: max-height 0.5s ease-in-out;
+            .teks-artikel { overflow: visible; }
+            .foto-samping {
+                max-width: none;
+                margin-bottom: 10px;
+                width: 25vw; 
+                height: 25vw;
             }
-            .teks-artikel-inner.expanded {
-                max-height: 5000px; 
+            .foto-samping-inner, .foto-samping-inner a, .foto-samping-inner img {
+                border-radius: 50%;
             }
-            .read-more-btn {
-                display: block;
-                width: 100%;
-                text-align: center;
-                padding: 10px;
-                background-color: var(--warna-utama);
-                color: white;
-                font-weight: bold;
-                cursor: pointer;
-                border: none;
-                border-radius: 5px;
-                margin-top: 15px;
-            }
-            
-            /* PERUBAHAN FINAL: Menghapus aturan foto khusus mobile agar sama seperti desktop */
 
-            footer { position: fixed; bottom: 0; left: 0; width: 100%; z-index: 999; box-shadow: 0 -3px 10px rgba(0,0,0,0.15); box-sizing: border-box; }
+            .artikel-container[data-img-pos="left"] .foto-samping {
+                float: left;
+                margin-right: 15px;
+                shape-outside: circle(50% at 50% 50%);
+                clip-path: circle(50% at 50% 50%);
+            }
+
+            .artikel-container[data-img-pos="right"] .foto-samping {
+                float: right;
+                margin-left: 15px;
+                shape-outside: circle(50% at 50% 50%);
+                clip-path: circle(50% at 50% 50%);
+            }
+
+            .artikel-container[data-img-pos="center"] .foto-samping {
+                float: left;
+                width: 40vw;
+                height: 40vw;
+                margin-left: 30vw;
+                margin-right: 30vw;
+                shape-outside: circle(50% at 50% 50%);
+            }
+            .artikel-container[data-img-pos="center"] .foto-samping-inner {
+                width: 100%;
+                height: 100%;
+            }
         }
     </style>
 </head>
@@ -219,9 +226,8 @@
             <main>
                 <article>
                     <h2 class="judul-artikel" id="artikelJudul"></h2>
-                    <div class="artikel-container">
+                    <div class="artikel-container" data-img-pos="left">
                         <div class="foto-samping"><div class="foto-samping-inner" id="foto-container"></div></div>
-                        
                         <div class="teks-artikel">
                             <div class="teks-artikel-inner" id="artikelTeks"></div>
                         </div>
@@ -320,7 +326,7 @@
         confirmModal.addEventListener('click', (e) => { if (e.target === confirmModal) closeModal(); });
         
         async function populateArticleForm(articleId) {
-            let article = { imageUrls: [''] };
+            let article = { imageUrls: [''], imagePosition: 'left' };
             let buttonText = 'Publikasikan';
             let formType = 'article-new';
 
@@ -344,6 +350,11 @@
                 authorInputHtml = `<div class="form-group"><label for="modalNamaPenulis">Nama Penulis:</label><input type="text" id="modalNamaPenulis" value="${escapeHTML(savedName)}"></div>`;
             }
             let photoInputsHtml = (article.imageUrls && article.imageUrls.length > 0 ? article.imageUrls : ['']).map((url, index) => `<div class="ai-prompt-group" style="margin-bottom: 10px;"><input type="url" class="photo-link-input" value="${escapeHTML(url || '')}" placeholder="Link foto ${index + 1}"><button class="btn-update" onclick="removePhotoInput(this)" style="background: #dc3545; width: auto; padding: 8px 10px;">-</button></div>`).join('');
+            
+            const isLeft = (article.imagePosition || 'left') === 'left' ? 'selected' : '';
+            const isRight = article.imagePosition === 'right' ? 'selected' : '';
+            const isCenter = article.imagePosition === 'center' ? 'selected' : '';
+
             modalBody.innerHTML = `
                 <div id="articleNotification" class="notification"></div>
                 ${authorInputHtml}
@@ -361,9 +372,27 @@
                     <div id="photo-inputs-container">${photoInputsHtml}</div>
                     <button class="btn-update" id="add-photo-btn" onclick="addPhotoInput()" style="background: #007bff; font-size: 0.9em; padding: 8px;">+ Tambah Foto</button>
                 </div>
+                <div class="form-group">
+                    <label for="modalPosisiGambar">Posisi Gambar (Mobile):</label>
+                    <select id="modalPosisiGambar">
+                        <option value="left" ${isLeft}>Kiri</option>
+                        <option value="right" ${isRight}>Kanan</option>
+                        <option value="center" ${isCenter}>Tengah (Teks di kiri-kanan)</option>
+                    </select>
+                </div>
                 <button class="btn-update" onclick="updateArticle(event, '${formType}')"><span class="btn-text">${buttonText}</span><div class="spinner"></div></button>
             `;
             checkPhotoLimit();
+            
+            const imagePosSelector = document.getElementById('modalPosisiGambar');
+            if (imagePosSelector) {
+                imagePosSelector.addEventListener('change', (event) => {
+                    const mainArticleContainer = document.querySelector('#majalah-wrapper .artikel-container');
+                    if (mainArticleContainer) {
+                        mainArticleContainer.dataset.imgPos = event.target.value;
+                    }
+                });
+            }
         }
 
         window.addPhotoInput = function() {
@@ -415,43 +444,17 @@
         }
         
         function setupReadMore() {
-            if (window.innerWidth > 650) return;
-
-            const teksArtikel = document.getElementById('artikelTeks');
-            const btnReadMore = document.getElementById('btn-baca-selengkapnya');
-            
-            if (!teksArtikel || !btnReadMore) {
-                console.error("Elemen artikel atau tombol tidak ditemukan.");
-                return;
-            }
-
-            teksArtikel.classList.remove('expanded');
-            btnReadMore.style.display = 'none';
-            btnReadMore.textContent = 'Baca Selengkapnya';
-
-            if (!btnReadMore.hasAttribute('data-listener-attached')) {
-                btnReadMore.addEventListener('click', () => {
-                    teksArtikel.classList.toggle('expanded');
-                    if (teksArtikel.classList.contains('expanded')) {
-                        btnReadMore.textContent = 'Tampilkan Lebih Sedikit';
-                    } else {
-                        btnReadMore.textContent = 'Baca Selengkapnya';
-                    }
-                });
-                btnReadMore.setAttribute('data-listener-attached', 'true');
-            }
-
-            setTimeout(() => {
-                if (teksArtikel.scrollHeight > 300) {
-                    btnReadMore.style.display = 'block';
-                }
-            }, 100); 
+            // Not used in mobile single frame view
         }
 
         function displayContent(data) {
             const article = data.article || {}; 
             const settings = data.settings.current || {};
             const recentArticles = data.recentArticles || [];
+            
+            const artikelContainer = document.querySelector('.artikel-container');
+            artikelContainer.dataset.imgPos = article.imagePosition || 'left';
+
             const formatUrl = (url) => {
                 if (!url || typeof url !== 'string' || url.trim() === '') return '#';
                 if (url.startsWith('http://') || url.startsWith('https://')) return url;
@@ -521,7 +524,6 @@
             }
             
             setupClickTrackers();
-            setupReadMore();
         }
         
         async function loadAllContent() {
@@ -730,7 +732,8 @@
                 data: {
                     title: document.getElementById('modalJudul').value.trim(),
                     imageUrls: imageUrls,
-                    content: content
+                    content: content,
+                    imagePosition: document.getElementById('modalPosisiGambar').value
                 }
             };
             
